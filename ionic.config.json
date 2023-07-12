@@ -1,0 +1,7 @@
+{
+  "name": "chatverse",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
