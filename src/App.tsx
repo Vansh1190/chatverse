@@ -1,7 +1,6 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
-import Menu from './components/Menu';
+import { Route } from 'react-router-dom';
 import Page from './pages/Page';
 
 /* Core CSS required for Ionic components to work properly */
@@ -22,7 +21,6 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Auth from './pages/Auth';
 import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Chat from './pages/Chat';
@@ -32,7 +30,7 @@ setupIonicReact();
 
 const App: React.FC = () => {
   return (
-    (<IonApp>
+    <IonApp>
       <IonReactRouter>
           {/* <Menu /> */}
           <IonRouterOutlet id="main">
@@ -50,7 +48,6 @@ const App: React.FC = () => {
           </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
-    )
   );
 };
 

@@ -1,5 +1,5 @@
 import  { useEffect, useState } from 'react';
-import { IonAvatar, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenu, IonMenuToggle, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonContent, IonHeader, IonItem, IonList, IonMenu, IonMenuToggle, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

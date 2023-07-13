@@ -1,8 +1,6 @@
-import React from 'react';
 
 import { IonButton, IonHeader, IonContent, IonNavLink, IonToolbar, IonTitle, IonList, IonItem, IonInput, IonGrid, IonCol } from '@ionic/react';
 import Signup from './Signup';
-import Form from './Form';
 
 function Signin() {
     return (

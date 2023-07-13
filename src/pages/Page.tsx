@@ -1,5 +1,4 @@
 import { IonButton, IonContent, IonHeader, IonNavLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
-import { useHistory, useParams } from 'react-router';
 import './Page.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -15,8 +14,6 @@ function Page(){
     document.getElementById('signin')?.setAttribute('disabled','');
 
     console.log(active)
-    const customId = "custom-id-yes";
-
     toast.loading("Waking up the Server, please wait", {
         draggablePercent: 60,
         theme: "dark",

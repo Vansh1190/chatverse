@@ -1,10 +1,6 @@
-import React, { useEffect } from 'react';
-import { IonAlert, IonButton, IonContent, IonHeader, IonPage, IonRedirect, IonTitle, IonToast, IonToolbar } from '@ionic/react';
-import { Redirect, useHistory } from 'react-router-dom';
+import {  IonButton, IonContent, IonPage,  IonToast } from '@ionic/react';
 
 function Alert({isVerified}:any) {
-  const history = useHistory();
-  // const navigate = useNavigate();
   
   if(isVerified == false){
     setTimeout(() => {

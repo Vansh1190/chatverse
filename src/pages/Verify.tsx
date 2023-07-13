@@ -134,8 +134,8 @@ function PageOne() {
                     {(!SentOtp) ?
                         (<IonButton id='submitBtn' type='submit' fill="solid">
 
-                            {(success && SentOtp) ? "Sending " : "Send verification code"}
-                            {(success && !SentOtp) ? (<IonSpinner></IonSpinner>) : null}
+                            {(success ) ? "Sending " : "Send verification code"}
+                            {(success ) ? (<IonSpinner></IonSpinner>) : null}
                         </IonButton>) : (
                             <IonButton id='submitBtn' onClick={verifyOtp} type='submit' fill="solid">Verify</IonButton>
                         )
