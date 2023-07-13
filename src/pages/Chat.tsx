@@ -3,13 +3,9 @@ import { IonAvatar, IonButton, IonContent, IonHeader, IonItem, IonList, IonMenu,
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useHistory } from 'react-router';
-
 function Chat() {
   const [isVerified, setVerified] = useState(false);
   const [user, setUser] = useState('');
-
-  const history = useHistory();
   const logOut = () =>{
     localStorage.removeItem('authToken')
     setVerified(false)
