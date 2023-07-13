@@ -46,7 +46,7 @@ function PageOne() {
                     theme: "dark",
                     autoClose: 1500,
                 });
-                setCountdown(10 );
+                setCountdown(100);
                 setTimeout(()=>{
                     document.getElementById("resendOtp")?.setAttribute('disabled', '');
             },100)

@@ -13,13 +13,13 @@ function Chat() {
   const logOut = () =>{
     localStorage.removeItem('authToken')
     setVerified(false)
+    window.location.reload()
   }
 
 
   useEffect(() => {
     if (!localStorage.getItem('authToken')) {
       setVerified(false);
-      
     }
     else {
       axios.get('https://chatverse-backend.onrender.com/auto', {
