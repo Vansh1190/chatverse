@@ -24,9 +24,9 @@ import './theme/variables.css';
 import Signup from './pages/Signup';
 import Tabs from './pages/Tabs';
 import Signin from './pages/Signin';
-import Chat from './pages/Chat';
+// import Chat from './pages/Chat';
 import Verify from './pages/Verify';
-import UserChat from './pages/User';
+// import UserChat from './pages/User';
 
 setupIonicReact();
 

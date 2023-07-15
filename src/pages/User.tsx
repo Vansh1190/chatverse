@@ -1,12 +1,12 @@
-import React from 'react';
-import { IonAvatar, IonButton, IonContent, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonNav, IonPage, IonPopover, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
-import { addCircleOutline, arrowBack, arrowBackCircle, arrowBackCircleOutline, ellipsisVertical, ellipsisVerticalCircle, ellipsisVerticalOutline, fastFood, paperPlane, paperPlaneOutline, send, sendOutline } from 'ionicons/icons';
+// import React from 'react';
+import { IonAvatar, IonButton, IonContent, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonPopover, IonToolbar } from '@ionic/react';
+import { arrowBack,   ellipsisVertical, paperPlaneOutline,  } from 'ionicons/icons';
 import '../theme/pages/chat.css'
-import { Icons } from 'react-toastify';
+// import {  } from 'react-toastify';
 import { useHistory, useRouteMatch } from 'react-router';
 
 
-function User(props: any) {
+function User() {
     const match = useRouteMatch()
     let history = useHistory();
     return (

@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
-import { IonAvatar, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonNav, IonNavLink, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle,  IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { settingsOutline, arrowBackCircleOutline, addCircleOutline, addOutline, addSharp } from 'ionicons/icons';
+import { settingsOutline, arrowBackCircleOutline,  addSharp } from 'ionicons/icons';
 import '../theme/pages/chat.css'
-import User from './User';
-import Signin from './Signin';
-import Page from './Page';
-import { addPlatform } from '@capacitor/core';
 
 function Chat(props:any) {
   const [isVerified, setVerified] = useState(false);
@@ -123,7 +119,7 @@ function Chat(props:any) {
                 <IonAvatar  id='AddStoryBtn'  className=''>
                   <IonIcon  size='large' style={{  display: "block" }} icon={addSharp}></IonIcon>
                 </IonAvatar>
-                <p>Add story {props.key}</p>
+                <p>Add story </p>
               </IonLabel>
 
               <IonLabel className='ChatIonLabel'>

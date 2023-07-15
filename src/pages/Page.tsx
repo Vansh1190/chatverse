@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonContent, IonFooter, IonHeader, IonList, IonNavLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonContent,  IonHeader,  IonList, IonNavLink, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import '../theme/pages/page.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -70,10 +70,10 @@ function Page() {
             }} fill='outline'>Sign in</IonButton>
           </IonNavLink>
         </IonRow>
-        <p className='footer'>
+        <IonList className='footer'>
           <img width={"25px"} src="https://www.pngall.com/wp-content/uploads/12/Secure-HTTPS-Green-Symbol-PNG.png" alt="" /> 
           <p>Secure, safe and end-end encrypted.</p>
-        </p>
+        </IonList>
        
         
       </IonContent>

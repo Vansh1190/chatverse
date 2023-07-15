@@ -4,9 +4,9 @@ import { IonReactRouter } from '@ionic/react-router';
 
 import { Route, Redirect } from 'react-router';
 
-import { playCircle, radio, library, search, peopleCircleOutline, addCircle, addCircleOutline, chatbubble, chatbubbleEllipses, chatbubbleEllipsesOutline, apertureOutline } from 'ionicons/icons';
+import {  library, search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline } from 'ionicons/icons';
 
-import HomePage from '../pages/Chat';
+// import HomePage from '../pages/Chat';
 import Chat from '../pages/Chat';
 import User from './User';
 import Page from './Page';
@@ -26,7 +26,7 @@ function Tabs() {
           Use the component prop when your component depends on the RouterComponentProps passed in automatically.
         */}
           <Route path="/chat"  key={'uni'}  render={() =>  <Chat keyop={'5'} />}  />
-          <Route path="/user/:id/:name" key={'usni'}  render={() => <User keyop={'d'}/>} exact={true} />
+          <Route path="/user/:id/:name" key={'usni'}  render={() => <User/>} exact={true} />
           <Route path="/library" key={'dddd'}  render={() => <Chat/>} exact={true} />
           {/* <Route path="/radio" render={() => <RadioPage />} exact={true} />
           <Route path="/library" render={() => <LibraryPage />} exact={true} />
