@@ -4,7 +4,8 @@ import axios from 'axios';
 import Card from '../components/Card';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import '../theme/pages/signup.css'
+import jwt_decode from 'jwt-decode'
 
 function PageOne() {
     const [countdown, setCountdown] = useState(0);
@@ -91,6 +92,10 @@ function PageOne() {
 
 
     useEffect(() => {
+        if(!verified){
+            let c:any = jwt_decode(localStorage.getItem("authToken") as string)
+            document.getElementsByName('email')[0].value = c.email;
+        }
         if(countdown >0){
             setTimeout(()=>{
                 setCountdown(countdown-1);
@@ -122,25 +127,25 @@ function PageOne() {
                 </IonToolbar>
             </IonHeader>
             <ToastContainer position="top-center" limit={1} />
-            <IonContent class="ion-padding">
+            <IonContent class="ion-padding page-container">
                 <form id='form' action="" onSubmit={GetOtp}>
 
-                    <IonInput type='email' name='email' label="email" labelPlacement="floating" counter={true}
+                    <IonInput type='email' name='email' readonly label="email" labelPlacement="floating" counter={true}
                         fill="solid" placeholder="" required
                     ></IonInput>
                     {(SentOtp) ? (<IonInput className='ion-margin-vertical' id='otp' type='tel' name='OTP' label="OTP" labelPlacement="floating" maxlength={6}
                         fill="solid" placeholder="" required
                     ></IonInput>) : null}
                     {(!SentOtp) ?
-                        (<IonButton id='submitBtn' type='submit' fill="solid">
+                        (<IonButton id='submitBtn' style={{marginTop:"15px"}} className='submitBtn' type='submit' fill="outline">
 
-                            {(success ) ? "Sending " : "Send verification code"}
+                            {(success ) ? "Sending " : "Generate OTP"}
                             {(success ) ? (<IonSpinner></IonSpinner>) : null}
                         </IonButton>) : (
-                            <IonButton id='submitBtn' onClick={verifyOtp} type='submit' fill="solid">Verify</IonButton>
+                            <IonButton id='submitBtn' onClick={verifyOtp} type='submit' className='submitBtn' fill="outline">Verify</IonButton>
                         )
                     }
-                    {(SentOtp) ? <IonButton id='resendOtp' onClick={GetOtp}>
+                    {(SentOtp) ? <IonButton id='resendOtp' style={{marginTop:"10px"}} className='submitBtn' fill='outline'  onClick={GetOtp}>
                         {(success) ? "Sending verification code " : `Resend ${(countdown == 0)? "":countdown}`}
                         {(success) ? (<IonSpinner></IonSpinner>) : null}
                     </IonButton> : null}

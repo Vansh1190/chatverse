@@ -1,0 +1,26 @@
+.ChatIonLabel {
+    display: flex !important;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+#AddStoryBtn{
+    border: 2px solid #3949AB;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ChatHeader{
+    --ion-toolbar-background:#3949AB;
+    /* background-color: red; */
+}
+ion-label{
+    overflow:visible !important;
+}
+.SendMessageInput{
+    --ion-item-background:#303030;
+    border-radius: 50px;
+
+}

@@ -1,0 +1,26 @@
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+form ion-list{
+    width: 90vw;
+    max-width: 500px;
+}
+ion-content{  
+    /* background-color: aquamarine !important; */
+    background:url(https://i.redd.it/ihfnlpbze7o01.jpg) no-repeat ;
+    background-size: cover;
+    --background:var(--background)
+}
+:root {
+	--ion-background-color: #ffffff;
+}
+form ion-button{
+    width: fit-content;
+}
+
+ion-title{
+    color: red;
+}

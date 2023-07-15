@@ -20,18 +20,17 @@
 
 }
 
-/* 
-ion-content{  
-    background:green no-repeat !important;
-    /* background-size: cover;
-    --background:var(--background) */
-
+.page-container:host{
+      margin: auto !important;
+}
 .page-container {
   background:black;
   background-size: 100vw 100vw;
   /* background-blend-mode:difference; */
   max-width: 500px;
-  background-position: center;;
+  background-position: center;
+  display: block;
+  margin: auto !important; 
 }
 .page-container img{
   background-color: black;
@@ -54,7 +53,8 @@ ion-content{
   font-size: large;
   letter-spacing: 1px;
   text-transform: inherit;
-  width: 300px;
+  width: 72vw;
+  max-width: 250px;
   background-color: white;
   color: rgb(0, 0, 0);
   font-weight: 700;

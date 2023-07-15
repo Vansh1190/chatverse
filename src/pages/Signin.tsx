@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { IonButton, IonHeader, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonInput, IonGrid, IonCol, IonSpinner } from '@ionic/react';
+import { IonButton, IonHeader, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonInput, IonGrid, IonCol, IonSpinner, IonLabel } from '@ionic/react';
 import { useHistory } from 'react-router';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import '../theme/pages/signup.css'
 
 function Signin() {
     const [success, setSuccess] = useState(false);
@@ -53,6 +53,11 @@ function Signin() {
 
         })
     }
+    if (localStorage.getItem('authToken')) {
+        return (
+            <ToastContainer position="top-center" limit={1} />
+        )
+    }
     return (
         <>
             <IonHeader>
@@ -61,11 +66,10 @@ function Signin() {
                 </IonToolbar>
             </IonHeader>
             <ToastContainer position="top-center" limit={1} />
-            <IonContent class="ion-padding ">
-                <h5>Login to existing account</h5>
+            <IonContent  className='ionContent page-container' class="ion-padding ">
+                <small className='subIonTitle' style={{opacity:'1', fontSize:'1em'}}>We're happy to see you in the Chatverse.</small>
                 <IonGrid>
                     <form onSubmit={signin} id='form' className='ion-justify-content-center'>
-
                         <IonList >
                             <IonCol class='ion-align-self-center'>
                                 <IonItem>
@@ -81,8 +85,12 @@ function Signin() {
                                 </IonItem>
                             </IonCol >
                         </IonList>
+                        <IonLabel className='privacy-footer'>
+          <p style={{ textAlign: 'end', opacity:"2", padding:'0 25px'}}>
+             <a href="/">Forgot password ?</a></p>
+            </IonLabel>
 
-                        <IonButton id='submitBtn' type='submit' fill="solid">
+                        <IonButton id='submitBtn' className='submitBtn SigninBtn' type='submit' fill="outline">
                             {(success) ? "Signing in " : "Sign in"}
                             {(success) ? (<IonSpinner></IonSpinner>) : null}
 
@@ -93,8 +101,7 @@ function Signin() {
                     <IonButton fill="outline">Sign up</IonButton>
                 </IonNavLink> */}
                 {/* <IonItem routerLink="/signup"> */}
-
-                <IonButton routerLink="/signup" className='ion-text-center' type='submit' fill="outline">Sign up</IonButton>
+                <IonButton routerLink="/signup" id='SignupBtn' className='ion-text-center submitBtn' type='submit' fill="outline">Don't have an account?</IonButton>
 
             </IonContent>
 

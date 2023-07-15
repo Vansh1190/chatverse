@@ -5,6 +5,7 @@ import { IonButton, IonHeader, IonContent,  IonToolbar, IonTitle, IonList, IonIt
 import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../theme/pages/signup.css'
 
 import { useHistory } from 'react-router-dom';
 
@@ -61,41 +62,44 @@ function Signup() {
         <>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Sign up</IonTitle>
+                    {/* <IonTitle >Sign up</IonTitle> */}
                 </IonToolbar>
             </IonHeader>
             <ToastContainer position="top-center" />
-            <IonContent class="ion-padding ">
-                <h5>Welcome to chatverse</h5>
-
+            <IonContent  class="ion-padding page-container">
+                <h5 className='ionTitle'>Welcome to chatverse</h5>
+                <small className='subIonTitle'>unlock the universe of connections in Chatverse</small>
                 <IonGrid>
                     <IonCol class='ion-align-self-center'>
                         <form id='form' onSubmit={signUp} className='ion-justify-content-center'>
 
                             <IonList >
                                 <IonItem >
-                                    <IonInput name='name' label="name" labelPlacement="floating"
+                                    <IonInput name='name' label="Name" labelPlacement="floating"
                                         fill="solid"  required
                                     ></IonInput>
                                 </IonItem>
                                 <IonItem >
-                                    <IonInput name='userName' label="username" labelPlacement="floating" counter={true}
+                                    <IonInput name='userName' label="Username" labelPlacement="floating" counter={true}
                                         fill="solid"  placeholder="" required
                                         counterFormatter={(inputLength, maxLength) => `${maxLength - inputLength} characters remaining`}
                                         maxlength={20}
                                     ></IonInput>
                                 </IonItem>
                                 <IonItem>
-                                    <IonInput label="email" name='email' labelPlacement="floating"
+                                    <IonInput label="Email" name='email' labelPlacement="floating"
                                         fill="solid"  type="email" placeholder="" required
                                     ></IonInput>
                                 </IonItem>
                                 <IonItem>
-                                    <IonInput name='password' label="password" required type='password' labelPlacement="floating" fill="solid"  minlength={6} placeholder=""></IonInput>
-
+                                    <IonInput name='password' label="Password" required type='password' labelPlacement="floating" fill="solid"  minlength={6} placeholder=""></IonInput>
                                 </IonItem>
                             </IonList>
-                            <IonButton id='submitBtn' type='submit' fill="outline">
+                            <div className='privacy-footer'>
+          <p style={{ textAlign: 'center', paddingBottom:'55px', opacity:"0.4", padding:'0 25px'}}>
+            By Signup, you agree to our <a href="/">terms and conditions.</a></p>
+            </div>
+                            <IonButton id='submitBtn' className='submitBtn' type='submit' fill="outline">
                                 {(success) ? "Signing up " : "Sign up"}
                                 {(success) ? (<IonSpinner></IonSpinner>) : null}
 
