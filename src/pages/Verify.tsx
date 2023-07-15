@@ -111,7 +111,7 @@ function PageOne() {
     if (verified) {
         setTimeout(() => {
             window.location.href= ('/chat')
-        }, 5000)
+        }, 4000)
         return (
             <Card title="verified successfully" message="you will be automatically redirected to homepage, please wait." img="https://cdn-icons-png.flaticon.com/512/1478/1478873.png" />
         )
@@ -123,7 +123,7 @@ function PageOne() {
         <>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>verify with e-mail</IonTitle>
+                    <IonTitle>Let's verify your account</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <ToastContainer position="top-center" limit={1} />
