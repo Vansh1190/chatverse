@@ -4,14 +4,70 @@ import { arrowBack,   ellipsisVertical, paperPlaneOutline,  } from 'ionicons/ico
 import '../theme/pages/chat.css'
 // import {  } from 'react-toastify';
 import { useHistory, useRouteMatch } from 'react-router';
+import { useEffect, useState } from 'react';
 
+function User({Socket, name }) {
 
-function User() {
+    const [joined, setJoined] = useState(false);
+    const [receivedMessages, setReceivedMessages] = useState([{}]);
+    const [AllMessages, setAllMessages] = useState([{}]);
+    const [count, setCount] = useState(1)
+    const [Messages, setMessages] = useState([{id: count}]);
+
     const match = useRouteMatch()
     let history = useHistory();
+
+    if (name !== '' && !joined) {
+        Socket.emit('join_room', match.params.room);
+        // console.log(`User with ID ${Socket.id} joined the room ${match.params.room}`);
+        setJoined(true);  
+    }
+    
+    const scrollToBottom = () => {
+        const chatContainer = document.getElementById('chat');
+        chatContainer?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
+    };
+
+    const MessageTemplate = {
+        message : '',
+        id: count,
+        time:new Date().toLocaleTimeString(),
+    }     
+    const SendMessage = () => {
+        let message = document.getElementById('messageToSend').value
+        document.getElementById('messageToSend').value = "";
+        if (message.trim() !== '') {
+        MessageTemplate.message = message;
+        setMessages([...Messages ,MessageTemplate]);
+        setAllMessages([...AllMessages ,MessageTemplate]);
+        setCount(count + 1);
+            const messageData = {
+              room: match.params.room,
+              sender: name,
+              message: message,
+              time: new Date().toLocaleTimeString(),
+            };
+            Socket.emit('sendMessage', messageData);
+          }
+    }
+   
+useEffect(()=>{
+    setCount(count + 1);
+    scrollToBottom();
+    Socket.on('receiveMessage', (data) => {
+        // console.log(data,'received');
+        // console.log(receivedMessages);
+        data.id = count;
+        setReceivedMessages([...receivedMessages,data]);
+        setAllMessages([...AllMessages ,data]);
+        // AllMessages.pop();
+        // console.log(AllMessages)
+        // AllMessages.push(data.message);
+        // setAllMessages( [...AllMessages] );
+    });
+},[Socket, AllMessages]);
     return (
         <>
-            
             <IonPage id='UserPAge'>
                 <IonHeader>
                     <IonToolbar>
@@ -27,12 +83,27 @@ function User() {
                         </IonItem>
                     </IonToolbar>
                 </IonHeader>
+                <IonContent>
+                    <div className="chat ion-padding" id='chat'>
+                    {AllMessages.map((e)=>{
+                        return (
+                            <div className={e.sender ? "senderChat" : "receiverChat"} key={e.id + joined}>
+                            <h1>{e.message}</h1>    
+                            <small>{e.time}</small>
+                            </div>
+                        )
+                    })}
+                    </div>
+                </IonContent>
                 <IonFooter className='ion-margin-bottom'>
                     <IonItem style={{ margin: '0 8px' }} className='SendMessageInput'>
-                        <IonInput aria-label="Primary input" color="success" placeholder="Type a message "></IonInput>
-                        <IonButton fill="clear">
+                        <IonInput aria-label="Primary input" id='messageToSend' color="success" placeholder="Type a message "></IonInput>
+                        <IonButton fill="clear" onClick={SendMessage}>
                             <IonIcon size='large' icon={paperPlaneOutline}></IonIcon>
                         </IonButton>
+                        {/* <IonButton onClick={joinRoom}>
+                            join chat
+                        </IonButton> */}
                     </IonItem>
 
                 </IonFooter>

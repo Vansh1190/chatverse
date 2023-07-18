@@ -3,5 +3,11 @@
   "integrations": {
     "capacitor": {}
   },
+  "proxies": [
+    {
+      "path": "",
+      "proxyUrl": "https://chatversesocket.onrender.com"
+    }
+  ],
   "type": "react-vite"
 }

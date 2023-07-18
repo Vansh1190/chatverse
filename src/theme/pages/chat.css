@@ -19,6 +19,28 @@
 ion-label{
     overflow:visible !important;
 }
+ion-icon{
+    cursor: pointer;
+}
+.cursorPointer{
+    cursor: pointer;
+}
+.senderChat{
+    
+    /* display: contents; */
+    text-align: start;
+}
+.receiverChat{
+    
+    text-align: end;
+    
+    /* display: contents; */
+
+}
+.chat{
+    overflow: auto;
+
+}
 .SendMessageInput{
     --ion-item-background:#303030;
     border-radius: 50px;

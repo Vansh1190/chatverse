@@ -24,7 +24,9 @@ function Page() {
     setTimeout(() => {
 
     }, 1500)
-
+    axios.options('https://chatversesocket.onrender.com').then(()=>{
+      console.log('running');
+    })
     axios.get('https://chatverse-backend.onrender.com').then(() => {
       toast.dismiss("custom-id-yes")
       document.getElementById('signup')?.removeAttribute('disabled');
@@ -39,7 +41,7 @@ function Page() {
       })
     })
   }, [])
-
+  
   return (
     <>
       <IonHeader>
@@ -51,6 +53,7 @@ function Page() {
       </IonHeader>
 
       <IonContent fullscreen className="page-container" >
+<div className="centerContent">
 
         <IonRow class="ion-justify-content-center">
           <IonCard>
@@ -70,6 +73,7 @@ function Page() {
             }} fill='outline'>Sign in</IonButton>
           </IonNavLink>
         </IonRow>
+            </div>
         <IonList className='footer'>
           <img width={"25px"} src="https://www.pngall.com/wp-content/uploads/12/Secure-HTTPS-Green-Symbol-PNG.png" alt="" /> 
           <p>Secure, safe and end-end encrypted.</p>

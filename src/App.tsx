@@ -47,9 +47,6 @@ const App: React.FC = () => {
             <Route path="/signin" component={Signin} />
             <Route path="/chat" key={'15'} component={Tabs} />
             <Route path="/user" key={'16'} component={Tabs} />
-
-              
-            
           </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>

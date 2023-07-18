@@ -1,29 +1,55 @@
 import { useEffect, useState } from 'react';
-import { IonAvatar, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle,  IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonModal, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { settingsOutline, arrowBackCircleOutline,  addSharp } from 'ionicons/icons';
+import { settingsOutline, arrowBackCircleOutline, addSharp, personAddOutline } from 'ionicons/icons';
 import '../theme/pages/chat.css'
 
-function Chat(props:any) {
+function Chat(props: any) {
+
   const [isVerified, setVerified] = useState(false);
   const [user, setUser] = useState('');
+  const [Friends, setFriends] = useState([]);
   const logOut = () => {
     localStorage.removeItem('authToken')
     setVerified(false)
     window.location.reload()
   }
-
+  const AddFriend = () => {
+    let UserID = document.getElementById("AddFriendInput").value;
+    if (UserID != '') {
+      axios.post('https://chatverse-backend.onrender.com/addfriend', {
+        data: {
+          authToken: localStorage.getItem('authToken'),
+          userID: UserID,
+        }
+      }).then((e) => {
+        toast.info(<p>{e.data}</p>, {
+          draggablePercent: 60,
+          theme: "dark",
+          position: 'top-center',
+          autoClose: 500
+        });
+      })
+    }
+  }
 
   useEffect(() => {
+    axios.post('https://chatverse-backend.onrender.com/allfriends', {
+      data: {
+        authToken: localStorage.getItem('authToken'),
+      }
+    }).then((e) => {
+      setFriends(e.data);
+    })
     if (!localStorage.getItem('authToken')) {
       setVerified(false);
     }
     else {
       axios.get('https://chatverse-backend.onrender.com/auto', {
         headers: {
-          token: localStorage.getItem('authToken')
+          token: localStorage.getItem('authToken'),
         }
       }).then((e) => {
         setVerified(true);
@@ -50,14 +76,52 @@ function Chat(props:any) {
         <IonButton fill='outline' onClick={() => {
           window.location.href = ("/signin")
         }}>Login in, first</IonButton>
-
+        
       </IonContent>
+    )
+  }
+  else if (!isVerified) {
+    return (
+      <>
+        <IonMenu type='reveal' contentId="main-content">
+          <IonHeader class='MenuHeader'>
+            <IonToolbar>
+              <IonRow className="ion-justify-content-between ion-padding-horizontal">
+                <IonTitle id='helo'>ChatVerse</IonTitle>
+                <IonMenuToggle>
+                  <IonIcon size='large' icon={arrowBackCircleOutline}></IonIcon>
+                </IonMenuToggle>
+              </IonRow>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <IonList>
+              <IonItem>
+                <IonLabel className='cursorPointer' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Logout</IonLabel>
+              </IonItem>
+            </IonList>
+          </IonContent>
+        </IonMenu>
+        <IonPage id="main-content">
+          <IonHeader className='ChatHeader'>
+            <IonToolbar>
+              <IonRow className="ion-justify-content-between ion-padding-horizontal">
+                <IonTitle id='helo'>Hi, {(user) ? user.toUpperCase() : null}.</IonTitle>
+                <IonMenuToggle>
+                  <IonIcon size='large' icon={settingsOutline} >Chats</IonIcon>
+                </IonMenuToggle>
+              </IonRow>
+            </IonToolbar>
+          </IonHeader>
+          <ToastContainer autoClose={false} position="bottom-center" limit={1} />
+        </IonPage>
+      </>
     )
   }
 
   return (
     <>
-      <IonMenu type='reveal'  contentId="main-content">
+      <IonMenu type='reveal' contentId="main-content">
         <IonHeader class='MenuHeader'>
           <IonToolbar>
             <IonRow className="ion-justify-content-between ion-padding-horizontal">
@@ -71,27 +135,10 @@ function Chat(props:any) {
         <IonContent className="ion-padding">
           <IonList>
             <IonItem>
-              <IonAvatar className='ion-margin-end'>
+              {/* <IonAvatar className='ion-margin-end'>
                 <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
               </IonAvatar> Person 1</IonItem>
-            <IonItem>
-              <IonAvatar className='ion-margin-end'>
-                <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-              </IonAvatar> Person 2</IonItem>
-            <IonItem>
-              <IonAvatar className='ion-margin-end'>
-                <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-              </IonAvatar> Person 3</IonItem>
-            <IonItem>
-
-              <IonLabel className='' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Logout</IonLabel>
-            </IonItem>
-            <IonItem>
-
-              <IonLabel className='' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Logout</IonLabel>
-            </IonItem>
-            <IonItem>
-
+            <IonItem> */}
               <IonLabel className='' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Logout</IonLabel>
             </IonItem>
           </IonList>
@@ -114,155 +161,61 @@ function Chat(props:any) {
 
           <IonList >
             <IonItem style={{}}>
-
               <IonLabel className='ChatIonLabel'>
-                <IonAvatar  id='AddStoryBtn'  className=''>
-                  <IonIcon  size='large' style={{  display: "block" }} icon={addSharp}></IonIcon>
+                <IonAvatar id='AddStoryBtn' className=''>
+                  <IonIcon size='large' style={{ display: "block" }} icon={addSharp}></IonIcon>
                 </IonAvatar>
                 <p>Add story </p>
               </IonLabel>
+              {Friends.map((friend) => {
+                return (
+                  <IonLabel key={friend.userName} className='ChatIonLabel'>
+                    <IonAvatar className=''>
+                      <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                    </IonAvatar>
+                    <p>{friend.userName}</p>
+                  </IonLabel>
+                )
+              })}
 
-              <IonLabel className='ChatIonLabel'>
-                <IonAvatar className=''>
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </IonAvatar>
-                <p>Friend 1</p>
-              </IonLabel>
-
-              <IonLabel className='ChatIonLabel'>
-                <IonAvatar className=''>
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </IonAvatar>
-                <p>Friend 2</p>
-              </IonLabel>
-
-              <IonLabel className='ChatIonLabel'>
-                <IonAvatar className=''>
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </IonAvatar>
-                <p>Friend 3</p>
-              </IonLabel>
-
-              <IonLabel className='ChatIonLabel'>
-                <IonAvatar className=''>
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </IonAvatar>
-                <p>Friend 4</p>
-              </IonLabel>
-
-              <IonLabel className='ChatIonLabel'>
-                <IonAvatar className=''>
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </IonAvatar>
-                <p>Friend 5</p>
-              </IonLabel>
-
-              <IonLabel className='ChatIonLabel'>
-                <IonAvatar className=''>
-                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </IonAvatar>
-                <p>Friend 6</p>
-              </IonLabel>
             </IonItem>
           </IonList>
         </IonRow >
         <IonContent>
-
-          <IonItem routerLink='/user/5/Vansh'>
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Vansh1{props.keyop} </IonLabel>
-          </IonItem>
-
-          
-
-
-          <IonItem routerLink='/user/5/Friend 1'>
-            <IonAvatar  slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel  > Friend 1</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/2/Friend 2' >
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 2 </IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/3/Friend 3' >
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 3</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/4/Friend 4' >
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar >
-            <IonLabel>Friend 4</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/5/Friend 5' >
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 5</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/51/Friend 51' >
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 51</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/6/Friend 6'>
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 6</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/7/Friend 7'>
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 7</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/8/Friend 8'>
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 8</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/9/Friend 9'>
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 9</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/10/Friend 10'>
-            <IonAvatar slot="start">
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 10</IonLabel>
-          </IonItem>
-
-          <IonItem routerLink='/user/11/Friend 11'>
-            <IonAvatar slot="start" >
-              <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <IonLabel>Friend 11</IonLabel>
-          </IonItem>
-
+          {Friends.map((friend) => {
+            return (
+              <IonItem key={friend.userName} routerLink={`/user/${friend.room}/${friend.userName}`}>
+                <IonAvatar slot="start">
+                  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                </IonAvatar>
+                <IonLabel>{friend.userName}</IonLabel>
+              </IonItem>
+            )
+          })}
         </IonContent>
+
+        {/* This is Modal for Adding new friend  */}
+        <IonFab slot="fixed" horizontal="end" vertical="bottom">
+          <IonFabButton id="open-modal" expand="block" className='ion-margin'>
+            <IonIcon icon={personAddOutline}></IonIcon>
+          </IonFabButton>
+        </IonFab>
+        <IonModal
+          trigger="open-modal"
+          initialBreakpoint={0.3}
+          breakpoints={[0, 0.25, 0.5, 0.75]}
+          handleBehavior="cycle"
+        >
+          <IonContent className="ion-padding">
+            <div className="ion-margin-top">
+              <IonLabel>
+                <IonInput type='text' placeholder='Enter userID' id='AddFriendInput' name='userName'></IonInput>
+                <IonButton onClick={AddFriend} type='submit'> Add Friend</IonButton>
+
+              </IonLabel>
+            </div>
+          </IonContent>
+        </IonModal>
       </IonPage>
 
 
