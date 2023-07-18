@@ -5,9 +5,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { settingsOutline, arrowBackCircleOutline, addSharp, personAddOutline } from 'ionicons/icons';
 import '../theme/pages/chat.css'
+import { useHistory } from 'react-router';
 
 function Chat(props: any) {
-
+  const history = useHistory();
   const [isVerified, setVerified] = useState(false);
   const [user, setUser] = useState('');
   const [Friends, setFriends] = useState([]);
@@ -31,6 +32,7 @@ function Chat(props: any) {
           position: 'top-center',
           autoClose: 500
         });
+        history.push('/chat')
       })
     }
   }

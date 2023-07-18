@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
-import { Route, Redirect, useParams } from 'react-router';
+import { Route, Redirect } from 'react-router';
 
 import {  library, search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline } from 'ionicons/icons';
 
@@ -12,7 +12,6 @@ let socket;
 // import HomePage from '../pages/Chat';
 import Chat from '../pages/Chat';
 import User from './User';
-import axios from 'axios';
 // import Page from './Page';
 // import RadioPage from './pages/RadioPage';
 // import LibraryPage from './pages/LibraryPage';
