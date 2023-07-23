@@ -24,7 +24,7 @@ function Page() {
     setTimeout(() => {
 
     }, 1500)
-    axios.options('http://localhost:3002').then(()=>{
+    axios.options('https://chatversesocket.onrender.com').then(()=>{
       console.log('running');
     })
     axios.get('https://chatverse-backend.onrender.com').then(() => {

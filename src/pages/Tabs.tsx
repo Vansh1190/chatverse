@@ -20,7 +20,7 @@ import ExploreFriends from './ExploreFriends';
 
 function Tabs() {
   useEffect(()=>{
-    socket = io('http://localhost:3000')
+    socket = io('https://chatversesocket.onrender.com')
 },[])
   return (
     <IonReactRouter>

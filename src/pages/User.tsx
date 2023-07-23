@@ -20,7 +20,6 @@ function User({ Socket, name }) {
     const [loadedOldChat, setLoadOldChat] = useState(false);
     const [joined, setJoined] = useState(false);
     const [OldMessages, setOldMessages] = useState([{}]);
-    const [Verified, setVerified] = useState(true);
     const [AllMessages, setAllMessages] = useState([{}]);
     const [ImageMsg, setImageMsg] = useState();
     const [count, setCount] = useState(1)
@@ -126,7 +125,7 @@ function User({ Socket, name }) {
 
     useEffect(() => {
         if (!loadedOldChat) {
-            axios.post('http://localhost:3002/allmessages',
+            axios.post('https://chatverse-backend.onrender.com/allmessages',
                 {
                     roomID: match.params.room,
                 },
