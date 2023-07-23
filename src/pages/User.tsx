@@ -1,6 +1,6 @@
 // import React from 'react';
 import { IonAvatar, IonButton, IonContent, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonPopover, IonTitle, IonToolbar } from '@ionic/react';
-import { addOutline, arrowBack, caretDownCircleSharp, codeDownloadSharp, ellipsisVertical, image, paperPlaneOutline} from 'ionicons/icons';
+import { arrowBack, caretDownCircleSharp,ellipsisVertical, image, paperPlaneOutline} from 'ionicons/icons';
 import '../theme/pages/chat.css'
 import { useHistory, useRouteMatch } from 'react-router';
 import { useEffect, useState } from 'react';

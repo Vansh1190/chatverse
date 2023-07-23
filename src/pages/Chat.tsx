@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonModal, IonPage, IonRefresher, IonRefresherContent, IonRow, IonTitle, IonToolbar, RefresherEventDetail } from '@ionic/react';
+import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonModal, IonPage, IonRefresher, IonRefresherContent, IonRow, IonText, IonTitle, IonToolbar, RefresherEventDetail } from '@ionic/react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -104,6 +104,9 @@ function Chat(props: any) {
               <IonItem>
                 <IonLabel className='cursorPointer' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Logout</IonLabel>
               </IonItem>
+              <IonItem>
+                <IonLabel className='cursorPointer' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Made with 💖 by <a href="https://vansh1190.github.io/about">Vansh1190</a> </IonLabel>
+              </IonItem>
             </IonList>
           </IonContent>
         </IonMenu>
@@ -111,7 +114,7 @@ function Chat(props: any) {
           <IonHeader className='ChatHeader'>
             <IonToolbar>
               <IonRow className="ion-justify-content-between ion-padding-horizontal">
-                <IonTitle id='helo'>Hi, {(user) ? user.toUpperCase() : null}.</IonTitle>
+                <IonTitle id='helo'>Hi, {(user) ? user : null}.</IonTitle>
                 <IonMenuToggle>
                   <IonIcon size='large' icon={settingsOutline} >Chats</IonIcon>
                 </IonMenuToggle>
@@ -145,6 +148,12 @@ function Chat(props: any) {
               </IonAvatar> Person 1</IonItem>
             <IonItem> */}
               <IonLabel className='' class='ion-margin' style={{ opacity: '0.5' }} onClick={logOut} >Logout</IonLabel>
+            </IonItem>
+          </IonList>
+          <IonList>
+            <IonItem >
+            <IonText color={'primary'} className='cursorPointer ion-margin-auto' style={{ color:'primary', opacity: '5' , textAlign:'center '}} onClick={ ()=>{window.location.href= 'https://vansh1190.github.io/about'}} >Made with 💖 by Vansh1190 
+            </IonText>
             </IonItem>
           </IonList>
         </IonContent>

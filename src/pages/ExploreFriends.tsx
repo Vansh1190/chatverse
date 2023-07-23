@@ -23,6 +23,7 @@ export default function ExploreFriends() {
         document.querySelectorAll('.addFriendButton').forEach((e) => {
           e.removeAttribute('disabled')
         })
+        console.log(e.data)
         if(e.data == 'Already you friend'){
           toast.error(<p>{e.data}</p>, {
             draggablePercent: 60,
@@ -32,7 +33,7 @@ export default function ExploreFriends() {
           });
         }
         else{
-          toast.success(<p>{e.data}</p>, {
+          toast.error(<p>{e.data}</p>, {
             draggablePercent: 60,
             theme: "dark",
             position: 'top-center',

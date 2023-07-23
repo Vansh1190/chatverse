@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 import { Route, Redirect } from 'react-router';
 
-import {  library, search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline, gitNetwork } from 'ionicons/icons';
+import { search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline, gitNetwork } from 'ionicons/icons';
 
 import io from 'socket.io-client';
 
