@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'chatverse',
+  appName: 'Chat Verse',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

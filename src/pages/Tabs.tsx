@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 
 import { Route, Redirect } from 'react-router';
 
-import {  library, search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline } from 'ionicons/icons';
+import {  library, search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline, gitNetwork } from 'ionicons/icons';
 
 import io from 'socket.io-client';
 
@@ -12,6 +12,7 @@ let socket;
 // import HomePage from '../pages/Chat';
 import Chat from '../pages/Chat';
 import User from './User';
+import ExploreFriends from './ExploreFriends';
 // import Page from './Page';
 // import RadioPage from './pages/RadioPage';
 // import LibraryPage from './pages/LibraryPage';
@@ -19,8 +20,8 @@ import User from './User';
 
 function Tabs() {
   useEffect(()=>{
-    socket = io('https://chatversesocket.onrender.com');
-  },[])
+    socket = io('http://localhost:3000')
+},[])
   return (
     <IonReactRouter>
       <IonTabs>
@@ -32,8 +33,8 @@ function Tabs() {
           Use the component prop when your component depends on the RouterComponentProps passed in automatically.
         */}
           <Route path="/chat"  key={'uni'}  render={() =>  <Chat/>}  />
-          <Route path="/user/:room/:name" render={() => <User Socket={socket} name={'vansh'} />} exact={true}   />
-          <Route path="/library" key={'dddd'}  render={() => <Chat/>} exact={true} />
+          <Route path="/user/:room/:name/:sender" render={() => <User Socket={socket} name={'vansh'} />} exact={true}   />
+          <Route path="/connect" key={'dddd'}  render={() => <ExploreFriends/>} exact={true} />
           {/* <Route path="/radio" render={() => <RadioPage />} exact={true} />
           <Route path="/library" render={() => <LibraryPage />} exact={true} />
           <Route path="/search" render={() => <SearchPage />} exact={true} /> */}
@@ -55,9 +56,9 @@ function Tabs() {
             <IonLabel></IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="library" >
-            <IonIcon icon={library} />
-            <IonLabel>Library</IonLabel>
+          <IonTabButton tab="Connect" href='/connect'>
+            <IonIcon icon={gitNetwork} />
+            <IonLabel>Connect</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="search" >

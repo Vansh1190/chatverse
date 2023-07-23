@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonModal, IonPage, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonModal, IonPage, IonRefresher, IonRefresherContent, IonRow, IonTitle, IonToolbar, RefresherEventDetail } from '@ionic/react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,6 +16,10 @@ function Chat(props: any) {
     localStorage.removeItem('authToken')
     setVerified(false)
     window.location.reload()
+  }
+  function handleRefresh() {
+    window.location.reload();
+      // event.detail.complete();
   }
   const AddFriend = () => {
     let UserID = document.getElementById("AddFriendInput").value;
@@ -70,7 +74,6 @@ function Chat(props: any) {
   if (!localStorage.getItem('authToken')) {
     return (
       <IonContent>
-
         <IonToolbar>
           <IonTitle>You don't have access to this page,</IonTitle>
         </IonToolbar>
@@ -150,7 +153,7 @@ function Chat(props: any) {
         <IonHeader className='ChatHeader'>
           <IonToolbar>
             <IonRow className="ion-justify-content-between ion-padding-horizontal">
-              <IonTitle id='helo'>Hi, {(user) ? user.toUpperCase() : null}.</IonTitle>
+              <IonTitle id='helo'>Hi, {(user) ? user : null}.</IonTitle>
               <IonMenuToggle>
                 <IonIcon size='large' icon={settingsOutline} >Chats</IonIcon>
               </IonMenuToggle>
@@ -183,10 +186,17 @@ function Chat(props: any) {
             </IonItem>
           </IonList>
         </IonRow >
+
+
         <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent>
+            </IonRefresherContent>
+          </IonRefresher>
+
           {Friends.map((friend) => {
             return (
-              <IonItem key={friend.userName} routerLink={`/user/${friend.room}/${friend.userName}`}>
+              <IonItem key={friend.userName} routerLink={`/user/${friend.room}/${friend.userName}/${user}`}>
                 <IonAvatar slot="start">
                   <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                 </IonAvatar>
