@@ -87,7 +87,7 @@ function User({ Socket, name }) {
         }))
         let MessageString = (JSON.stringify(c).replaceAll('"', ''));
 
-        axios.post('http://localhost:3000/chat', {
+        axios.post('https://chatwithbro.onrender.com/chat', {
             message: `Give me summary  of this conversation without includding any greetings message for summary the Conversation - ${MessageString}`
         }).then((e) => {
             console.log(e)
