@@ -90,11 +90,9 @@ function User({ Socket, name }) {
         axios.post('https://chatwithbro.onrender.com/chat', {
             message: `Give me summary  of this conversation without includding any greetings message for summary the Conversation - ${MessageString}`
         }).then((e) => {
-            console.log(e)
             setChatSummaryText(e.data.choices[0].message.content);
         }).catch((err) => {
             console.log(err);
-
         })
 
 
@@ -192,7 +190,7 @@ function User({ Socket, name }) {
         <>
             <IonPage id='UserPAge'>
 
-                <IonHeader>
+                <IonHeader> 
                     <IonToolbar>
                         <IonItem>
                             <IonIcon onClick={() => history.goBack()} icon={arrowBack}></IonIcon>

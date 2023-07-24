@@ -25,8 +25,11 @@ function Page() {
 
     }, 1500)
     axios.options('https://chatversesocket.onrender.com').then(()=>{
-      console.log('running');
+      // console.log('running');
     })
+
+    axios.get('https://chatwithbro.onrender.com')
+
     axios.get('https://chatverse-backend.onrender.com').then(() => {
       toast.dismiss("custom-id-yes")
       document.getElementById('signup')?.removeAttribute('disabled');
