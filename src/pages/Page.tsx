@@ -27,8 +27,8 @@ function Page() {
     axios.options('https://chatversesocket.onrender.com').then(()=>{
       // console.log('running');
     })
-
     axios.get('https://chatwithbro.onrender.com')
+
 
     axios.get('https://chatverse-backend.onrender.com').then(() => {
       toast.dismiss("custom-id-yes")
