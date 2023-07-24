@@ -1,6 +1,6 @@
 // import React from 'react';
-import { IonAvatar, IonButton, IonContent, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonPopover, IonTitle, IonToolbar } from '@ionic/react';
-import { arrowBack, caretDownCircleSharp,ellipsisVertical, image, paperPlaneOutline} from 'ionicons/icons';
+import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonPopover, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { arrowBack, caretDownCircleSharp, ellipsisVertical, image, paperPlaneOutline, personAddOutline } from 'ionicons/icons';
 import '../theme/pages/chat.css'
 import { useHistory, useRouteMatch } from 'react-router';
 import { useEffect, useState } from 'react';
@@ -25,48 +25,49 @@ function User({ Socket, name }) {
     const [count, setCount] = useState(1)
     const [Messages, setMessages] = useState([{ id: count }]);
     const [ImageUrl, setImageUrl] = useState('');
+    const [ChatSummaryText, setChatSummaryText] = useState('');
 
     const match = useRouteMatch<RouteParams>()
     let history = useHistory();
 
- 
-        if(localStorage.getItem("authToken")){
-            let c:any = jwt_decode(localStorage.getItem("authToken") as string)
-            if(c.userName != match.params.sender){
-                    return (
-                        <IonContent>
-                          <IonToolbar>
-                            <IonTitle>You don't have access to this page,</IonTitle>
-                          </IonToolbar>
-                  
-                          <IonButton fill='outline' onClick={() => {
-                              window.location.href = ("/signin")
-                            }}>Login in, first</IonButton>
-                          
-                        </IonContent>
-                      )                
-            }
-            // setVerified(true)
-        }
-        else{
+
+    if (localStorage.getItem("authToken")) {
+        let c: any = jwt_decode(localStorage.getItem("authToken") as string)
+        if (c.userName != match.params.sender) {
             return (
                 <IonContent>
-                  <IonToolbar>
-                    <IonTitle>You don't have access to this page,</IonTitle>
-                  </IonToolbar>
-          
-                  <IonButton fill='outline' onClick={() => {
-                      window.location.href = ("/signin")
+                    <IonToolbar>
+                        <IonTitle>You don't have access to this page,</IonTitle>
+                    </IonToolbar>
+
+                    <IonButton fill='outline' onClick={() => {
+                        window.location.href = ("/signin")
                     }}>Login in, first</IonButton>
-                  
+
                 </IonContent>
-              )  
+            )
         }
-    
-    
-    
+        // setVerified(true)
+    }
+    else {
+        return (
+            <IonContent>
+                <IonToolbar>
+                    <IonTitle>You don't have access to this page,</IonTitle>
+                </IonToolbar>
+
+                <IonButton fill='outline' onClick={() => {
+                    window.location.href = ("/signin")
+                }}>Login in, first</IonButton>
+
+            </IonContent>
+        )
+    }
+
+
+
     if (name !== '' && !joined) {
-            Socket.emit('join_room', match.params.room);
+        Socket.emit('join_room', match.params.room);
         setJoined(true);
     }
 
@@ -74,18 +75,42 @@ function User({ Socket, name }) {
         const chatContainer = document.getElementById('chat');
         chatContainer?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
     };
-    
+    const ChatSummarize = () => {
+        let d = document.getElementById('MoreOptions') as HTMLElement;
+        d.style.display = 'none';
+        let c = [];
+        c.push(OldMessages.map((e) => {
+            return {
+                message: e.message,
+                sender: e.sender,
+            }
+        }))
+        let MessageString = (JSON.stringify(c).replaceAll('"', ''));
+
+        axios.post('http://localhost:3000/chat', {
+            message: `Give me summary  of this conversation without includding any greetings message for summary the Conversation - ${MessageString}`
+        }).then((e) => {
+            console.log(e)
+            setChatSummaryText(e.data.choices[0].message.content);
+        }).catch((err) => {
+            console.log(err);
+
+        })
+
+
+    }
+
     const MessageTemplate = {
         message: '',
         id: count,
         time: new Date().toLocaleTimeString(),
-        imageURL : ImageUrl
+        imageURL: ImageUrl
     }
     const SendImage = (e) => {
         setImageMsg(e.target.files[0])
         let url = URL.createObjectURL(e.target.files[0]);
         setImageUrl(url);
-        if(document.getElementById('img')){
+        if (document.getElementById('img')) {
             let ImgElem = document.getElementById('img') as HTMLImageElement
             ImgElem.src = url;
         }
@@ -105,7 +130,7 @@ function User({ Socket, name }) {
                     Image: {
                         data: ImageMsg,
                         contentType: 'image/jpeg',
-                        imageURL : ImageUrl
+                        imageURL: ImageUrl
                     },
                     sender: match.params.sender,
                     message: message,
@@ -119,8 +144,8 @@ function User({ Socket, name }) {
         }
     }
     // useEffect(()=>{
-      
-        
+
+
     // },[])
 
     useEffect(() => {
@@ -130,15 +155,15 @@ function User({ Socket, name }) {
                     roomID: match.params.room,
                 },
                 {
-                    headers:{
+                    headers: {
                         authtoken: localStorage.getItem('authToken'),
                     }
                 }
             ).then((e) => {
                 if (e.data[0]) {
                     let Arr = (e.data[0]['messages'])
-                    Arr.forEach( element => {
-                        if(element.Image.data){
+                    Arr.forEach(element => {
+                        if (element.Image.data) {
                             const binaryData = element.Image.data;
                             const bufferData = Uint8Array.from(atob(binaryData), (c) => c.charCodeAt(0));
                             const blob = new Blob([bufferData], { type: 'image/jpeg' });
@@ -146,8 +171,9 @@ function User({ Socket, name }) {
                         }
                     });
                     setOldMessages(Arr);
+
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err);
             })
             setLoadOldChat(true);
@@ -165,7 +191,7 @@ function User({ Socket, name }) {
     return (
         <>
             <IonPage id='UserPAge'>
-                
+
                 <IonHeader>
                     <IonToolbar>
                         <IonItem>
@@ -174,13 +200,13 @@ function User({ Socket, name }) {
                                 <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                             </IonAvatar>
                             <IonLabel>{match.params.name}</IonLabel>
-        
+
                             <ToastContainer position="top-center" limit={1} />
                             <IonIcon id='popover-button' icon={ellipsisVertical}></IonIcon>
 
                         </IonItem>
                     </IonToolbar>
-                    
+
                 </IonHeader>
                 <IonContent>
                     <div className="chat ion-padding" id='chat'>
@@ -189,7 +215,7 @@ function User({ Socket, name }) {
                                 return (
                                     <div className={(e.sender == match.params.name) ? "senderChat" : "receiverChat"} key={e._id + joined + e.time}>
                                         <h1>{e.message}
-                                        {(e.Image.fileName) ? <img width={"100px"} src={e.Image.fileName} alt="" /> : null}
+                                            {(e.Image.fileName) ? <img width={"100px"} src={e.Image.fileName} alt="" /> : null}
                                         </h1>
                                         <small>{e.time}</small>
                                     </div>
@@ -204,8 +230,8 @@ function User({ Socket, name }) {
                                     return (
                                         <div className={(e.messages.sender == match.params.name) ? "senderChat" : "receiverChat"} key={e.id + joined}>
                                             <h1>{e.messages.message}
-                                            {(e.messages.Image.imageURL) ? <img width={"100px"} src={e.messages.Image.imageURL} alt="" /> : null}
-                                           
+                                                {(e.messages.Image.imageURL) ? <img width={"100px"} src={e.messages.Image.imageURL} alt="" /> : null}
+
                                             </h1>
                                             <small>{e.messages.time}</small>
                                         </div>
@@ -215,7 +241,7 @@ function User({ Socket, name }) {
                                     return (
                                         <div className={(e.sender) ? "senderChat" : "receiverChat"} key={e.id + joined}>
                                             <h1>{e.message}
-                                           {(e.imageURL) ? <img width={"100px"} src={e.imageURL} alt="" /> : null}
+                                                {(e.imageURL) ? <img width={"100px"} src={e.imageURL} alt="" /> : null}
                                             </h1>
                                             <small>{e.time}</small>
                                         </div>
@@ -227,24 +253,23 @@ function User({ Socket, name }) {
                             <IonIcon size='large' icon={caretDownCircleSharp} style={{ background: 'black', borderRadius: "50%" }}>hello</IonIcon>
                         </IonButton>
                     </div>
-                    
                 </IonContent>
                 <IonFooter className='ion-margin-bottom'>
                     <img width={"100px"} src='' id='img' alt="" />
-                    <IonItem style={{display: 'none'}}>
-                    <input type='file' style={{display: 'none'}} onChange={(e)=>{
-                        SendImage(e);
-                    }} id='inputfile'></input>
-                        
+                    <IonItem style={{ display: 'none' }}>
+                        <input type='file' style={{ display: 'none' }} onChange={(e) => {
+                            SendImage(e);
+                        }} id='inputfile'></input>
+
                     </IonItem>
                     <IonItem style={{ margin: '0 8px' }} className='SendMessageInput'>
-                        <IonButton onClick={() =>{
+                        <IonButton onClick={() => {
                             document.getElementById('inputfile')?.click()
                         }}>
-                                <IonIcon icon={image}>
-                                </IonIcon>
-                        </IonButton>   
-                        
+                            <IonIcon icon={image}>
+                            </IonIcon>
+                        </IonButton>
+
                         <IonInput aria-label="Primary input" id='messageToSend' color="success" placeholder="Type a message "></IonInput>
                         <IonButton fill="clear" onClick={SendMessage}>
                             <IonIcon size='large' icon={paperPlaneOutline}></IonIcon>
@@ -255,12 +280,33 @@ function User({ Socket, name }) {
                     </IonItem>
 
                 </IonFooter>
-                <IonPopover trigger="popover-button" dismissOnSelect={true}>
-                    <IonContent>
+                <IonPopover trigger="popover-button" dismissOnSelect={false}>
+                    <IonContent id='MoreOptions'>
                         <IonList>
-                            <IonItem button={true} detail={false}>
-                                Option 1
+                            {/* //This is Chat summarize feature with MOdel */}
+                            <IonItem button={true} onClick={ChatSummarize} id='open-modal' detail={false}>
+                                Summary
                             </IonItem>
+                            {/* Model for Chat Summary  */}
+                            <IonModal
+                                trigger="open-modal"
+                                initialBreakpoint={0.5}
+                                breakpoints={[0, 0.25, 0.5, 0.75]}
+                                handleBehavior="cycle"
+                            >
+                                <IonContent className="ion-padding">
+                                    <div className="ion-margin-top">
+                                        <IonItem>
+                                        <IonLabel>
+                                            <IonTitle>Chat Summary</IonTitle>
+                                        </IonLabel>
+                                        </IonItem>
+                                        <IonText>
+                                           {(ChatSummaryText) ? ChatSummaryText : 'Generating...'}                                            
+                                        </IonText>
+                                    </div>
+                                </IonContent>
+                            </IonModal>
                             <IonItem button={true} detail={false}>
                                 Option 2
                             </IonItem>

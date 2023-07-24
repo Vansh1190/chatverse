@@ -42,12 +42,14 @@ function Chat(props: any) {
   }
 
   useEffect(() => {
+
     axios.post('https://chatverse-backend.onrender.com/allfriends', {
       data: {
         authToken: localStorage.getItem('authToken'),
       }
     }).then((e) => {
       setFriends(e.data);
+     
     })
     if (!localStorage.getItem('authToken')) {
       setVerified(false);
@@ -60,6 +62,7 @@ function Chat(props: any) {
       }).then((e) => {
         setVerified(true);
         setUser(e.data.UserName);
+        
       }).catch((err) => {
         // console.log(err);
         setVerified(false);
@@ -202,10 +205,9 @@ function Chat(props: any) {
           <IonRefresherContent>
             </IonRefresherContent>
           </IonRefresher>
-
           {Friends.map((friend) => {
             return (
-              <IonItem key={friend.userName} routerLink={`/user/${friend.room}/${friend.userName}/${user}`}>
+              <IonItem key={friend.userName} id={friend.userName} routerLink={`/user/${friend.room}/${friend.userName}/${user}`}>
                 <IonAvatar slot="start">
                   <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                 </IonAvatar>
