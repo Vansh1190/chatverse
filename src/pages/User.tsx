@@ -76,8 +76,8 @@ function User({ Socket, name }) {
         chatContainer?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
     };
     const ChatSummarize = () => {
-        let d = document.getElementById('MoreOptions') as HTMLElement;
-        d.style.display = 'none';
+        // let d = document.getElementById('MoreOptions') as HTMLElement;
+        // d.style.display = 'none';
         let c = [];
         c.push(OldMessages.map((e) => {
             return {
