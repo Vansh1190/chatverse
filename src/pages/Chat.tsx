@@ -6,9 +6,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import { settingsOutline, arrowBackCircleOutline, addSharp, personAddOutline } from 'ionicons/icons';
 import '../theme/pages/chat.css'
 import { useHistory } from 'react-router';
+import { Socket } from 'socket.io-client';
 
 function Chat(props: any) {
   const history = useHistory();
+  const [onlineUsers, setOnlineUsers] = useState([])
+  const [ChangeDetected, setChangeDetected] = useState(false)
   const [isVerified, setVerified] = useState(false);
   const [user, setUser] = useState('');
   const [Friends, setFriends] = useState([]);
@@ -21,6 +24,15 @@ function Chat(props: any) {
     window.location.reload();
       // event.detail.complete();
   }
+
+  // console.log(props.Socket)
+    if(props.Socket){
+      props.Socket.on("Change", (data)=>{
+        setChangeDetected(!ChangeDetected);
+        setOnlineUsers(data[0]);
+      })
+    }
+
   const AddFriend = () => {
     let UserID = document.getElementById("AddFriendInput").value;
     if (UserID != '') {
@@ -41,8 +53,18 @@ function Chat(props: any) {
     }
   }
 
-  useEffect(() => {
+  useEffect(()=>{
+    axios.post('https://chatverse-backend.onrender.com/onlineusers', {
+      data: {
+        authToken: localStorage.getItem('authToken'),
+      }
+    }).then((e) => {
+      setOnlineUsers(e.data.allUsers);
+    })
+  },[])
 
+
+  useEffect(() => {    
     axios.post('https://chatverse-backend.onrender.com/allfriends', {
       data: {
         authToken: localStorage.getItem('authToken'),
@@ -63,8 +85,10 @@ function Chat(props: any) {
         setVerified(true);
         setUser(e.data.UserName);
         
+        //Passing props to Tabs component using Function.
+        props.GetEmailFunc(user)
       }).catch((err) => {
-        // console.log(err);
+        console.log(err);
         setVerified(false);
         toast.warning(<p>Account not verified, please verify you account. <a href="/verify">verify now</a></p>, {
           draggablePercent: 60,
@@ -184,6 +208,7 @@ function Chat(props: any) {
                 </IonAvatar>
                 <p>Add story </p>
               </IonLabel>
+
               {Friends.map((friend) => {
                 return (
                   <IonLabel key={friend.userName} className='ChatIonLabel'>
@@ -191,6 +216,7 @@ function Chat(props: any) {
                       <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                     </IonAvatar>
                     <p>{friend.userName}</p>
+                    
                   </IonLabel>
                 )
               })}
@@ -212,6 +238,7 @@ function Chat(props: any) {
                   <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                 </IonAvatar>
                 <IonLabel>{friend.userName}</IonLabel>
+                <span>{(onlineUsers?.includes(friend.userName) && friend.userName != user) ? '🟢': ''}</span>
               </IonItem>
             )
           })}

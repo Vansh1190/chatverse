@@ -67,8 +67,10 @@ function User({ Socket, name }) {
 
 
     if (name !== '' && !joined) {
-        Socket.emit('join_room', match.params.room);
-        setJoined(true);
+        if(Socket){
+            Socket.emit('join_room', match.params.room);
+            setJoined(true);
+        }
     }
 
     const scrollToBottom = () => {
@@ -179,6 +181,7 @@ function User({ Socket, name }) {
         setCount(count + 1);
         scrollToBottom();
         Socket.on('receiveMessage', (data: any) => {
+            console.log(data,'ddd');
             data.id = count;
             const blob = new Blob([data.messages.Image.data], { type: 'image/jpeg' });
             data.messages.Image.imageURL = URL.createObjectURL(blob);
@@ -278,19 +281,20 @@ function User({ Socket, name }) {
                     </IonItem>
 
                 </IonFooter>
-                <IonPopover trigger="popover-button" dismissOnSelect={false}>
+                <IonPopover trigger="popover-button" dismissOnSelect={false} ondis>
                     <IonContent id='MoreOptions'>
                         <IonList>
                             {/* //This is Chat summarize feature with MOdel */}
-                            <IonItem button={true} onClick={ChatSummarize} id='open-modal' detail={false}>
+                            <IonItem button={true} onClick={ChatSummarize} id='open-modal2' detail={false}>
                                 Summary
                             </IonItem>
                             {/* Model for Chat Summary  */}
                             <IonModal
-                                trigger="open-modal"
+                                trigger="open-modal2"
                                 initialBreakpoint={0.5}
                                 breakpoints={[0, 0.25, 0.5, 0.75]}
-                                handleBehavior="cycle"
+                                // handleBehavior="cycle"
+                                
                             >
                                 <IonContent className="ion-padding">
                                     <div className="ion-margin-top">
@@ -308,10 +312,10 @@ function User({ Socket, name }) {
                             <IonItem button={true} detail={false}>
                                 Option 2
                             </IonItem>
-                            <IonItem button={true} detail={true} id="nested-trigger">
+                            {/* <IonItem button={true} detail={true} id="nested-trigger">
                                 More options...
-                            </IonItem>
-                            <IonPopover side='start' dismissOnSelect={true} trigger='nested-trigger'>
+                            </IonItem> */}
+                            {/* <IonPopover side='start' dismissOnSelect={true} trigger='nested-trigger'>
                                 <IonContent>
                                     <IonList>
                                         <IonItem button={true} detail={false}>
@@ -320,7 +324,7 @@ function User({ Socket, name }) {
                                         <IonItem button={true} detail={false}>Sub option 1</IonItem>
                                     </IonList>
                                 </IonContent>
-                            </IonPopover>
+                            </IonPopover> */}
                         </IonList>
                     </IonContent>
                 </IonPopover>

@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 import { Route, Redirect } from 'react-router';
 
-import { search,  addCircleOutline,  chatbubbleEllipses,  apertureOutline, gitNetwork } from 'ionicons/icons';
+import { search, addCircleOutline, chatbubbleEllipses, apertureOutline, gitNetwork } from 'ionicons/icons';
 
 import io from 'socket.io-client';
 
@@ -19,10 +19,29 @@ import ExploreFriends from './ExploreFriends';
 // import SearchPage from './pages/SearchPage';
 
 function Tabs() {
-  useEffect(()=>{
-    socket = io('https://chatversesocket.onrender.com')
-},[])
+  const [UserName, setUserName] = useState(undefined);
+
+  const getEmail = (name)=>{
+    setUserName(name);
+  }
+  socket = io('https://chatversesocket.onrender.com')
+  useEffect(() => {
+    if(UserName){
+      socket = io('https://chatversesocket.onrender.com')
+    }
+    if(socket){
+      socket.on('connect', ()=>{
+        if(UserName){
+          socket.emit('SetOnline',UserName)
+          setUserName(undefined);
+        }
+      })
+      
+      socket.emit('join_room', 'HOME');
+    }
+    }, [UserName, socket])
   return (
+
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
@@ -32,9 +51,9 @@ function Tabs() {
 
           Use the component prop when your component depends on the RouterComponentProps passed in automatically.
         */}
-          <Route path="/chat"  key={'uni'}  render={() =>  <Chat/>}  />
-          <Route path="/user/:room/:name/:sender" render={() => <User Socket={socket} name={'vansh'} />} exact={true}   />
-          <Route path="/connect" key={'dddd'}  render={() => <ExploreFriends/>} exact={true} />
+          <Route path="/chat" key={'uni'} render={() => <Chat GetEmailFunc={getEmail} Socket={socket} />} />
+          <Route path="/user/:room/:name/:sender" render={() => <User Socket={socket} name={'vansh'} />} exact={true} />
+          <Route path="/connect" key={'dddd'} render={() => <ExploreFriends />} exact={true} />
           {/* <Route path="/radio" render={() => <RadioPage />} exact={true} />
           <Route path="/library" render={() => <LibraryPage />} exact={true} />
           <Route path="/search" render={() => <SearchPage />} exact={true} /> */}
@@ -50,7 +69,7 @@ function Tabs() {
             <IonIcon icon={apertureOutline} />
             <IonLabel>Status</IonLabel>
           </IonTabButton>
-           
+
           <IonTabButton tab="add" >
             <IonIcon size='large' icon={addCircleOutline} />
             <IonLabel></IonLabel>
@@ -65,7 +84,7 @@ function Tabs() {
             <IonIcon icon={search} />
             <IonLabel>Search</IonLabel>
           </IonTabButton>
-         
+
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
