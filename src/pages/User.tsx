@@ -181,7 +181,6 @@ function User({ Socket, name }) {
         setCount(count + 1);
         scrollToBottom();
         Socket.on('receiveMessage', (data: any) => {
-            console.log(data,'ddd');
             data.id = count;
             const blob = new Blob([data.messages.Image.data], { type: 'image/jpeg' });
             data.messages.Image.imageURL = URL.createObjectURL(blob);
