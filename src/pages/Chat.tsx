@@ -44,10 +44,10 @@ function Chat(props: any) {
 
   useEffect(()=>{
   if (isVerified) {
-    OneSignal.init({ appId: 'a7443046-e175-4adf-8de9-c2a296e35359' }).then(() => {
-      OneSignal.showSlidedownPrompt().then(() => {
-      });
-    })
+    // OneSignal.init({ appId: 'a7443046-e175-4adf-8de9-c2a296e35359' }).then(() => {
+    //   OneSignal.showSlidedownPrompt().then(() => {
+    //   });
+    // })
     OneSignal.on('subscriptionChange', function () {
       OneSignal.isPushNotificationsEnabled((status)=>{
         OneSignal.getUserId((id) => {

@@ -17,7 +17,7 @@ function Page() {
     document.getElementById('signup')?.setAttribute('disabled', '');
     document.getElementById('signin')?.setAttribute('disabled', '');
 
-    console.log(active)
+    // console.log(active)
     toast.loading("Waking up the Server, please wait", {
       draggablePercent: 60,
       theme: "dark",
@@ -27,7 +27,7 @@ function Page() {
     setTimeout(() => {
 
     }, 1500)
-    axios.options('https://chatversesocket.onrender.com').then(()=>{
+    axios.get('https://chatversesocket.onrender.com/socket').then(()=>{
       // console.log('running');
     })
     axios.get('https://chatwithbro.onrender.com')
