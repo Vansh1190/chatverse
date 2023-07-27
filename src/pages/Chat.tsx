@@ -6,15 +6,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { settingsOutline, arrowBackCircleOutline, addSharp, personAddOutline } from 'ionicons/icons';
 import '../theme/pages/chat.css'
 import { useHistory } from 'react-router';
-import { Socket } from 'socket.io-client';
+import OneSignal from 'react-onesignal';
 
 function Chat(props: any) {
   const history = useHistory();
   const [onlineUsers, setOnlineUsers] = useState([])
-  const [ChangeDetected, setChangeDetected] = useState(false)
   const [isVerified, setVerified] = useState(false);
   const [user, setUser] = useState('');
   const [Friends, setFriends] = useState([]);
+  const [OneSignalinitialized, setOneSignalinitialized] = useState(false);
+
   const logOut = () => {
     localStorage.removeItem('authToken')
     setVerified(false)
@@ -22,16 +23,53 @@ function Chat(props: any) {
   }
   function handleRefresh() {
     window.location.reload();
-      // event.detail.complete();
+    // event.detail.complete();
+  }
+  let updateNotifyID = (id:any, isEnabled: any, userID:any) => { 
+    axios.post('https://chatverse-backend.onrender.com/updatenotifID',{
+        id: id,
+        enabled: isEnabled,
+        userID: userID,
+        }).catch((err)=>{
+          console.log(err);
+        })
   }
 
   // console.log(props.Socket)
-    if(props.Socket){
-      props.Socket.on("Change", (data)=>{
-        setChangeDetected(!ChangeDetected);
-        setOnlineUsers(data[0]);
-      })
-    }
+  if (props.Socket) {
+    props.Socket.on("Change", (data) => {
+      setOnlineUsers(data[0]);
+    })
+  }
+
+  useEffect(()=>{
+  if (isVerified) {
+    OneSignal.init({ appId: 'a7443046-e175-4adf-8de9-c2a296e35359' }).then(() => {
+      OneSignal.showSlidedownPrompt().then(() => {
+      });
+    })
+    OneSignal.on('subscriptionChange', function () {
+      OneSignal.isPushNotificationsEnabled((status)=>{
+        OneSignal.getUserId((id) => {
+          updateNotifyID(id, status, user);
+          if(!status){
+            localStorage.removeItem('os_pageViews')
+            localStorage.removeItem('isOptedOut')
+            localStorage.removeItem('onesignal-notification-prompt')
+            localStorage.removeItem('isPushNotificationsEnabled')
+          }
+        })
+    });
+  })
+  OneSignal.isPushNotificationsEnabled((status)=> {
+    OneSignal.getUserId((id) => {
+      updateNotifyID(id, status, user);
+    });
+  })
+  }
+
+},[OneSignalinitialized, isVerified])
+
 
   const AddFriend = () => {
     let UserID = document.getElementById("AddFriendInput").value;
@@ -53,25 +91,24 @@ function Chat(props: any) {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     axios.post('https://chatverse-backend.onrender.com/onlineusers', {
       data: {
         authToken: localStorage.getItem('authToken'),
       }
     }).then((e) => {
       setOnlineUsers(e.data.allUsers);
-    })
-  },[])
+    }).catch((err) => { throw err });
+  }, [])
 
 
-  useEffect(() => {    
+  useEffect(() => {
     axios.post('https://chatverse-backend.onrender.com/allfriends', {
       data: {
         authToken: localStorage.getItem('authToken'),
       }
     }).then((e) => {
       setFriends(e.data);
-     
     })
     if (!localStorage.getItem('authToken')) {
       setVerified(false);
@@ -84,7 +121,7 @@ function Chat(props: any) {
       }).then((e) => {
         setVerified(true);
         setUser(e.data.UserName);
-        
+
         //Passing props to Tabs component using Function.
         props.GetEmailFunc(user)
       }).catch((err) => {
@@ -108,7 +145,7 @@ function Chat(props: any) {
         <IonButton fill='outline' onClick={() => {
           window.location.href = ("/signin")
         }}>Login in, first</IonButton>
-        
+
       </IonContent>
     )
   }
@@ -179,8 +216,8 @@ function Chat(props: any) {
           </IonList>
           <IonList>
             <IonItem >
-            <IonText color={'primary'} className='cursorPointer ion-margin-auto' style={{ color:'primary', opacity: '5' , textAlign:'center '}} onClick={ ()=>{window.location.href= 'https://vansh1190.github.io/about'}} >Made with 💖 by Vansh1190 
-            </IonText>
+              <IonText color={'primary'} className='cursorPointer ion-margin-auto' style={{ color: 'primary', opacity: '5', textAlign: 'center ' }} onClick={() => { window.location.href = 'https://vansh1190.github.io/about' }} >Made with 💖 by Vansh1190
+              </IonText>
             </IonItem>
           </IonList>
         </IonContent>
@@ -216,7 +253,7 @@ function Chat(props: any) {
                       <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                     </IonAvatar>
                     <p>{friend.userName}</p>
-                    
+
                   </IonLabel>
                 )
               })}
@@ -227,8 +264,8 @@ function Chat(props: any) {
 
 
         <IonContent>
-        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-          <IonRefresherContent>
+          <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+            <IonRefresherContent>
             </IonRefresherContent>
           </IonRefresher>
           {Friends.map((friend) => {
@@ -238,7 +275,7 @@ function Chat(props: any) {
                   <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                 </IonAvatar>
                 <IonLabel>{friend.userName}</IonLabel>
-                <span>{(onlineUsers?.includes(friend.userName) && friend.userName != user) ? '🟢': ''}</span>
+                <span>{(onlineUsers?.includes(friend.userName) && friend.userName != user) ? '🟢' : ''}</span>
               </IonItem>
             )
           })}

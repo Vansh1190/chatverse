@@ -1,9 +1,9 @@
 // import React from 'react';
-import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonPopover, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonPopover, IonText, IonTextarea, IonTitle, IonToolbar } from '@ionic/react';
 import { arrowBack, caretDownCircleSharp, ellipsisVertical, image, paperPlaneOutline, personAddOutline } from 'ionicons/icons';
 import '../theme/pages/chat.css'
-import { useHistory, useRouteMatch } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useHistory, useParams, useRouteMatch } from 'react-router';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +16,7 @@ type RouteParams = {
     receiver: string,
 };
 
-function User({ Socket, name }) {
+function User({ Socket, name, GetEmailFunc }) {
     const [loadedOldChat, setLoadOldChat] = useState(false);
     const [joined, setJoined] = useState(false);
     const [OldMessages, setOldMessages] = useState([{}]);
@@ -24,13 +24,17 @@ function User({ Socket, name }) {
     const [ImageMsg, setImageMsg] = useState();
     const [count, setCount] = useState(1)
     const [Messages, setMessages] = useState([{ id: count }]);
+    const [MessageToSend, setMessageToSend] = useState('');
     const [ImageUrl, setImageUrl] = useState('');
     const [ChatSummaryText, setChatSummaryText] = useState('');
 
+    const BottomElement = useRef<HTMLIonLabelElement>(null);
+    const ModalElement = useRef<HTMLIonPopoverElement>(null)
+
+
     const match = useRouteMatch<RouteParams>()
     let history = useHistory();
-
-
+   
     if (localStorage.getItem("authToken")) {
         let c: any = jwt_decode(localStorage.getItem("authToken") as string)
         if (c.userName != match.params.sender) {
@@ -64,8 +68,6 @@ function User({ Socket, name }) {
         )
     }
 
-
-
     if (name !== '' && !joined) {
         if(Socket){
             Socket.emit('join_room', match.params.room);
@@ -73,13 +75,48 @@ function User({ Socket, name }) {
         }
     }
 
+    const CheckUnReadMSG = (UserName, roomID, messageToSend, Sender) => {
+        // console.log(roomID, UserName);
+        axios.post('https://chatverse-backend.onrender.com/checkunreadmsg',{
+            roomID: roomID,
+            userName: UserName,
+            messageToSend: messageToSend,
+            sender: Sender,
+        }).then((e)=>{
+            // console.log(e)
+        }).catch((err)=>{
+            console.log(err);
+        })
+    }
+
+
+    const handleEnterButton = (e) =>{
+        if(e.keyCode == 13 && !e.altKey && !e.ctrlKey && !e.shiftKey){
+            SendMessage();
+            setTimeout(() => {
+                document.getElementById('messageToSend').value = null;
+            }, 10);
+        }
+        if(e.keyCode == 13 && !e.altKey && !e.ctrlKey && e.shiftKey){
+            console.log('New line');
+            
+        }
+
+    }
+
+    const LeaveRoom = () => {
+        Socket.emit('LeaveRoom',match.params.room)
+        console.log('leaved');
+    }
+    
     const scrollToBottom = () => {
         const chatContainer = document.getElementById('chat');
         chatContainer?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
     };
     const ChatSummarize = () => {
-        // let d = document.getElementById('MoreOptions') as HTMLElement;
-        // d.style.display = 'none';
+        let d = document.getElementById('MoreOptions') as HTMLButtonElement;
+        d.style.display = 'none';
+        // ModalElement.current?.dismiss();
         let c = [];
         c.push(OldMessages.map((e) => {
             return {
@@ -88,18 +125,24 @@ function User({ Socket, name }) {
             }
         }))
         let MessageString = (JSON.stringify(c).replaceAll('"', ''));
-
+        
         axios.post('https://chatwithbro.onrender.com/chat', {
-            message: `Give me summary  of this conversation without includding any greetings message for summary the Conversation - ${MessageString}`
+            message: `Give me summary  of this conversation without including any greetings message for summary the Conversation - ${MessageString}`
         }).then((e) => {
             setChatSummaryText(e.data.choices[0].message.content);
         }).catch((err) => {
             console.log(err);
         })
-
-
     }
+    useEffect(()=>{
+        GetEmailFunc(match.params.sender);
+    },[])
 
+    useEffect(()=>{ 
+            BottomElement.current?.scrollIntoView();
+       
+    }, [OldMessages, AllMessages]);
+    
     const MessageTemplate = {
         message: '',
         id: count,
@@ -116,11 +159,11 @@ function User({ Socket, name }) {
         }
     }
     const SendMessage = () => {
-        let message = document.getElementById('messageToSend').value
-        document.getElementById('messageToSend').value = "";
+        let MessageToSend = document.getElementById('messageToSend').value
+        // // document.getElementById('messageToSend').value = null;
         document.getElementById('img').src = '';
-        if (message.trim() !== '' || ImageMsg) {
-            MessageTemplate.message = message;
+        if (MessageToSend.trim() !== '' || ImageMsg) {
+            MessageTemplate.message = MessageToSend;
             setMessages([...Messages, MessageTemplate]);
             setAllMessages([...AllMessages, MessageTemplate]);
             setCount(count + 1);
@@ -133,7 +176,7 @@ function User({ Socket, name }) {
                         imageURL: ImageUrl
                     },
                     sender: match.params.sender,
-                    message: message,
+                    message: MessageToSend,
                     receiver: match.params.name,
                     time: new Date().toLocaleString(),
                     read: false,
@@ -141,13 +184,12 @@ function User({ Socket, name }) {
             };
             setImageMsg(undefined);
             Socket.emit('sendMessage', messageData);
+            setMessageToSend('');
+            setTimeout(() => {
+                CheckUnReadMSG(messageData.messages.receiver, messageData.roomID, messageData.messages.message, messageData.messages.sender);
+            }, 900);
         }
     }
-    // useEffect(()=>{
-
-
-    // },[])
-
     useEffect(() => {
         if (!loadedOldChat) {
             axios.post('https://chatverse-backend.onrender.com/allmessages',
@@ -178,16 +220,28 @@ function User({ Socket, name }) {
             })
             setLoadOldChat(true);
         }
-        setCount(count + 1);
-        scrollToBottom();
-        Socket.on('receiveMessage', (data: any) => {
-            data.id = count;
-            const blob = new Blob([data.messages.Image.data], { type: 'image/jpeg' });
-            data.messages.Image.imageURL = URL.createObjectURL(blob);
-            setAllMessages([...AllMessages, data]);
-            Socket.emit('readMessage', data);
-        });
+        if(Socket){
+            Socket.off('receiveMessage').on('receiveMessage', (data: any) => {
+                data.id = count;
+                if (data.messages.Image.data){
+                    const blob =  new Blob([data.messages.Image.data], { type: 'image/jpeg' });
+                    data.messages.Image.imageURL =  URL.createObjectURL(blob);
+                }
+                else{
+                    data.messages.Image.imageURL = undefined
+                }
+                setAllMessages([...AllMessages, data])
+                setCount(count + 1);
+                Socket.emit('readMessage', data);
+            }); 
+        }
+        // scrollToBottom();
     }, [Socket, AllMessages]);
+
+    useEffect(()=>{
+        
+    },[Socket, AllMessages]);
+
     return (
         <>
             <IonPage id='UserPAge'>
@@ -195,7 +249,7 @@ function User({ Socket, name }) {
                 <IonHeader> 
                     <IonToolbar>
                         <IonItem>
-                            <IonIcon onClick={() => history.goBack()} icon={arrowBack}></IonIcon>
+                            <IonIcon onClick={() => {LeaveRoom(); history.goBack(); } } icon={arrowBack}></IonIcon>
                             <IonAvatar slot="" className='ion-margin'>
                                 <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
                             </IonAvatar>
@@ -215,7 +269,7 @@ function User({ Socket, name }) {
                                 return (
                                     <div className={(e.sender == match.params.name) ? "senderChat" : "receiverChat"} key={e._id + joined + e.time}>
                                         <h1>{e.message}
-                                            {(e.Image.fileName) ? <img width={"100px"} src={e.Image.fileName} alt="" /> : null}
+                                            {(e.Image.fileName) ? <img loading='lazy' width={"100px"} src={e.Image.fileName} alt="" /> : null}
                                         </h1>
                                         <small>{e.time}</small>
                                     </div>
@@ -224,7 +278,7 @@ function User({ Socket, name }) {
                         })
                         }
                         {AllMessages.map((e) => {
-                            scrollToBottom();
+                            // scrollToBottom();
                             if (Object.keys(e).length != 0) {
                                 if (e.roomID) {
                                     return (
@@ -249,6 +303,9 @@ function User({ Socket, name }) {
                                 }
                             }
                         })}
+
+                        <IonLabel ref={BottomElement}></IonLabel>
+
                         <IonButton onClick={scrollToBottom} style={{ position: 'fixed', bottom: '77px', right: '14px' }} fill='clear'>
                             <IonIcon size='large' icon={caretDownCircleSharp} style={{ background: 'black', borderRadius: "50%" }}>hello</IonIcon>
                         </IonButton>
@@ -270,7 +327,14 @@ function User({ Socket, name }) {
                             </IonIcon>
                         </IonButton>
 
-                        <IonInput aria-label="Primary input" id='messageToSend' color="success" placeholder="Type a message "></IonInput>
+                        <IonTextarea onKeyDown={(e) => {handleEnterButton(e)}} onChange={(e) => setMessageToSend(e.target.value)} 
+                        aria-label="input"
+                        id='messageToSend'
+                        color="success" 
+                        placeholder="Type a message"
+                        value={MessageToSend}
+
+                        ></IonTextarea>
                         <IonButton fill="clear" onClick={SendMessage}>
                             <IonIcon size='large' icon={paperPlaneOutline}></IonIcon>
                         </IonButton>
@@ -280,7 +344,10 @@ function User({ Socket, name }) {
                     </IonItem>
 
                 </IonFooter>
-                <IonPopover trigger="popover-button" dismissOnSelect={false} ondis>
+                <IonPopover 
+                    trigger="popover-button" 
+                    ref={ModalElement} 
+                    dismissOnSelect={false}>
                     <IonContent id='MoreOptions'>
                         <IonList>
                             {/* //This is Chat summarize feature with MOdel */}
@@ -288,7 +355,8 @@ function User({ Socket, name }) {
                                 Summary
                             </IonItem>
                             {/* Model for Chat Summary  */}
-                            <IonModal
+                            <IonModal 
+                                onDidDismiss={()=>{ModalElement.current?.dismiss()}}
                                 trigger="open-modal2"
                                 initialBreakpoint={0.5}
                                 breakpoints={[0, 0.25, 0.5, 0.75]}

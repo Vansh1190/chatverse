@@ -7,8 +7,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import bg from './pngwing.com (2).png';
 
 
+
 function Page() {
   const [active, setActive] = useState(false);
+  // const data = await OneSignal.getDeviceState();
+  // const player_id=data.userId;
 
   useEffect(() => {
     document.getElementById('signup')?.setAttribute('disabled', '');

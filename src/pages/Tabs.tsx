@@ -21,10 +21,9 @@ import ExploreFriends from './ExploreFriends';
 function Tabs() {
   const [UserName, setUserName] = useState(undefined);
 
-  const getEmail = (name)=>{
+  const getEmail = (name)=>{ 
     setUserName(name);
   }
-  socket = io('https://chatversesocket.onrender.com')
   useEffect(() => {
     if(UserName){
       socket = io('https://chatversesocket.onrender.com')
@@ -52,7 +51,7 @@ function Tabs() {
           Use the component prop when your component depends on the RouterComponentProps passed in automatically.
         */}
           <Route path="/chat" key={'uni'} render={() => <Chat GetEmailFunc={getEmail} Socket={socket} />} />
-          <Route path="/user/:room/:name/:sender" render={() => <User Socket={socket} name={'vansh'} />} exact={true} />
+          <Route path="/user/:room/:name/:sender" render={() => <User Socket={socket} GetEmailFunc={getEmail} name={'vansh'} />} exact={true} />
           <Route path="/connect" key={'dddd'} render={() => <ExploreFriends />} exact={true} />
           {/* <Route path="/radio" render={() => <RadioPage />} exact={true} />
           <Route path="/library" render={() => <LibraryPage />} exact={true} />
