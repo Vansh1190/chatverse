@@ -30,6 +30,7 @@ function User({ Socket, name, GetEmailFunc }) {
 
     const BottomElement = useRef<HTMLIonLabelElement>(null);
     const ModalElement = useRef<HTMLIonPopoverElement>(null)
+    // const MessageTo = useRef<HTMLIonPopoverElement>(null)
 
 
     const match = useRouteMatch<RouteParams>()
@@ -68,14 +69,16 @@ function User({ Socket, name, GetEmailFunc }) {
         )
     }
 
-    if (name !== '' && !joined) {
-        if(Socket){
-            Socket.emit('join_room', match.params.room);
-            setJoined(true);
-        }
-    }
+    // if (name !== '' && !joined) {
+    //     if(Socket){
+    //         Socket.emit('join_room', match.params.room);
+    //         setJoined(true);
+    //         console.log('true');
+    //     }
+    // }
 
     const CheckUnReadMSG = (UserName, roomID, messageToSend, Sender) => {
+        console.log(UserName, roomID, messageToSend, Sender)
         // console.log(roomID, UserName);
         axios.post('https://chatverse-backend.onrender.com/checkunreadmsg',{
             roomID: roomID,
@@ -92,14 +95,16 @@ function User({ Socket, name, GetEmailFunc }) {
 
     const handleEnterButton = (e) =>{
         if(e.keyCode == 13 && !e.altKey && !e.ctrlKey && !e.shiftKey){
+            e.preventDefault();
+         
             SendMessage();
             setTimeout(() => {
-                document.getElementById('messageToSend').value = null;
+                // setMessageToSend('')
+                // document.getElementById('messageToSend').value = null;
             }, 10);
         }
         if(e.keyCode == 13 && !e.altKey && !e.ctrlKey && e.shiftKey){
             console.log('New line');
-            
         }
 
     }
@@ -135,12 +140,14 @@ function User({ Socket, name, GetEmailFunc }) {
         })
     }
     useEffect(()=>{
-        GetEmailFunc(match.params.sender);
+        GetEmailFunc(match.params.sender, match.params.room);
+        setTimeout(() => {
+            document.getElementById('messageToSend').setFocus()
+        }, 0);
     },[])
 
     useEffect(()=>{ 
             BottomElement.current?.scrollIntoView();
-       
     }, [OldMessages, AllMessages]);
     
     const MessageTemplate = {
@@ -157,41 +164,42 @@ function User({ Socket, name, GetEmailFunc }) {
             let ImgElem = document.getElementById('img') as HTMLImageElement
             ImgElem.src = url;
         }
-    }
+    }   
     const SendMessage = () => {
-        let MessageToSend = document.getElementById('messageToSend').value
-        // // document.getElementById('messageToSend').value = null;
         document.getElementById('img').src = '';
-        if (MessageToSend.trim() !== '' || ImageMsg) {
-            MessageTemplate.message = MessageToSend;
-            setMessages([...Messages, MessageTemplate]);
-            setAllMessages([...AllMessages, MessageTemplate]);
-            setCount(count + 1);
-            const messageData = {
-                roomID: match.params.room,
-                messages: {
-                    Image: {
-                        data: ImageMsg,
-                        contentType: 'image/jpeg',
-                        imageURL: ImageUrl
+        if(MessageToSend){
+            if (MessageToSend.trim() !== '' || ImageMsg) {
+                MessageTemplate.message = MessageToSend;
+                setMessages([...Messages, MessageTemplate]);
+                setAllMessages([...AllMessages, MessageTemplate]);
+                setCount(count + 1);
+                const messageData = {
+                    roomID: match.params.room,
+                    messages: {
+                        Image: {
+                            data: ImageMsg,
+                            contentType: 'image/jpeg',
+                            imageURL: ImageUrl
+                        },
+                        sender: match.params.sender,
+                        message: MessageToSend,
+                        receiver: match.params.name,
+                        time: new Date().toLocaleString(),
+                        read: false,
                     },
-                    sender: match.params.sender,
-                    message: MessageToSend,
-                    receiver: match.params.name,
-                    time: new Date().toLocaleString(),
-                    read: false,
-                },
-            };
-            setImageMsg(undefined);
-            Socket.emit('sendMessage', messageData);
-            setMessageToSend('');
-            setTimeout(() => {
-                CheckUnReadMSG(messageData.messages.receiver, messageData.roomID, messageData.messages.message, messageData.messages.sender);
-            }, 900);
-        }
+                };
+                setImageMsg(undefined);
+                Socket.emit('sendMessage', messageData);
+                setMessageToSend('');
+                setTimeout(() => {
+                    CheckUnReadMSG(messageData.messages.receiver, messageData.roomID, messageData.messages.message, messageData.messages.sender);
+                }, 900);
+            }
+            }
     }
     useEffect(() => {
         if (!loadedOldChat) {
+            
             axios.post('https://chatverse-backend.onrender.com/allmessages',
                 {
                     roomID: match.params.room,
@@ -213,15 +221,15 @@ function User({ Socket, name, GetEmailFunc }) {
                         }
                     });
                     setOldMessages(Arr);
-
                 }
             }).catch((err) => {
                 console.log(err);
             })
             setLoadOldChat(true);
         }
-        if(Socket){
+        if(Socket){ 
             Socket.off('receiveMessage').on('receiveMessage', (data: any) => {
+                console.log('eror')
                 data.id = count;
                 if (data.messages.Image.data){
                     const blob =  new Blob([data.messages.Image.data], { type: 'image/jpeg' });
@@ -230,20 +238,17 @@ function User({ Socket, name, GetEmailFunc }) {
                 else{
                     data.messages.Image.imageURL = undefined
                 }
-                setAllMessages([...AllMessages, data])
-                setCount(count + 1);
-                Socket.emit('readMessage', data);
+                
+                if(data.messages.sender !==  match.params.sender){
+                    setAllMessages([...AllMessages, data])
+                    setCount(count + 1);
+                    Socket.emit('readMessage', data);
+                    }
             }); 
         }
-        // scrollToBottom();
     }, [Socket, AllMessages]);
 
-    useEffect(()=>{
-        
-    },[Socket, AllMessages]);
-
     return (
-        <>
             <IonPage id='UserPAge'>
 
                 <IonHeader> 
@@ -326,15 +331,17 @@ function User({ Socket, name, GetEmailFunc }) {
                             <IonIcon icon={image}>
                             </IonIcon>
                         </IonButton>
-
-                        <IonTextarea onKeyDown={(e) => {handleEnterButton(e)}} onChange={(e) => setMessageToSend(e.target.value)} 
-                        aria-label="input"
-                        id='messageToSend'
-                        color="success" 
-                        placeholder="Type a message"
-                        value={MessageToSend}
-
-                        ></IonTextarea>
+                        {/* <IonItem> */}
+                            <IonTextarea onKeyDown={(e) => {handleEnterButton(e)}} onIonInput={(e) => {
+                                setMessageToSend(e.detail.value);
+                            }}
+                            aria-label="input"
+                            id='messageToSend'
+                            color="success" 
+                            placeholder="Type a message"
+                            value={MessageToSend}
+                            ></IonTextarea>
+                        {/* </IonItem> */}
                         <IonButton fill="clear" onClick={SendMessage}>
                             <IonIcon size='large' icon={paperPlaneOutline}></IonIcon>
                         </IonButton>
@@ -396,7 +403,6 @@ function User({ Socket, name, GetEmailFunc }) {
                     </IonContent>
                 </IonPopover>
             </IonPage>
-        </>
     )
 }
 export default User;

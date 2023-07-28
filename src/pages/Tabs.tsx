@@ -20,25 +20,31 @@ import ExploreFriends from './ExploreFriends';
 
 function Tabs() {
   const [UserName, setUserName] = useState(undefined);
-
-  const getEmail = (name)=>{ 
+  const [RoomID, setRoomID] = useState(undefined);
+  
+  const getEmail = (name, roomID)=>{ 
     setUserName(name);
+    setRoomID(roomID);
   }
   useEffect(() => {
+    // console.log(UserName);
     if(UserName){
       socket = io('https://chatversesocket.onrender.com')
     }
     if(socket){
       socket.on('connect', ()=>{
+        
         if(UserName){
           socket.emit('SetOnline',UserName)
           setUserName(undefined);
+          setUserName(RoomID);
         }
       })
-      
-      socket.emit('join_room', 'HOME');
+      if(UserName && RoomID){
+        socket.emit('join_room', RoomID);
+      }
     }
-    }, [UserName, socket])
+    }, [UserName,socket])
   return (
 
     <IonReactRouter>
