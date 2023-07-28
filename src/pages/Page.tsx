@@ -9,9 +9,6 @@ import bg from './pngwing.com (2).png';
 
 
 function Page() {
-  const [active, setActive] = useState(false);
-  // const data = await OneSignal.getDeviceState();
-  // const player_id=data.userId;
 
   useEffect(() => {
     document.getElementById('signup')?.setAttribute('disabled', '');
@@ -36,10 +33,8 @@ function Page() {
     axios.get('https://chatverse-backend.onrender.com').then(() => {
       toast.dismiss("custom-id-yes")
       document.getElementById('signup')?.removeAttribute('disabled');
-      document.getElementById('signin')?.removeAttribute('disabled');
-      // setActive(true);
+      document.getElementById('signin')?.removeAttribute('disabled'); 
     }).catch(() => {
-      setActive(false);
       toast.loading("We are experiencing high traffic, please try again later.", {
         draggablePercent: 60,
         theme: "dark",
@@ -67,7 +62,7 @@ function Page() {
             <img width={"200vw"} src={bg} alt="" />
           </IonCard>
           <h1>
-            Stay connected with your friends and family
+            Stay connecteds with your friends and family
           </h1>
 
           <IonNavLink>

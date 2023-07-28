@@ -48,7 +48,6 @@ function User({ Socket, name, GetEmailFunc }) {
                     <IonButton fill='outline' onClick={() => {
                         window.location.href = ("/signin")
                     }}>Login in, first</IonButton>
-
                 </IonContent>
             )
         }

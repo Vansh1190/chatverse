@@ -1,27 +1,21 @@
 import { useEffect, useState } from 'react';
 import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-
 import { Route, Redirect } from 'react-router';
-
 import { search, addCircleOutline, chatbubbleEllipses, apertureOutline, gitNetwork } from 'ionicons/icons';
 
 import io from 'socket.io-client';
 
-let socket;
-// import HomePage from '../pages/Chat';
+let socket:any;
+
 import Chat from '../pages/Chat';
 import User from './User';
 import ExploreFriends from './ExploreFriends';
-// import Page from './Page';
-// import RadioPage from './pages/RadioPage';
-// import LibraryPage from './pages/LibraryPage';
-// import SearchPage from './pages/SearchPage';
 
-function Tabs() {
+function Tabs(props:any) {
   const [UserName, setUserName] = useState(undefined);
   const [RoomID, setRoomID] = useState(undefined);
-  
+
   const getEmail = (name, roomID)=>{ 
     setUserName(name);
     setRoomID(roomID);

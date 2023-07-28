@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { IonButton, IonHeader, IonContent, IonToolbar, IonTitle, IonList, IonItem, IonInput, IonGrid, IonCol, IonSpinner, IonLabel } from '@ionic/react';
 import { useHistory } from 'react-router';
@@ -6,11 +6,32 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../theme/pages/signup.css'
+import { UserIdContext } from '../components/UserIDContext';
+import jwt_decode from 'jwt-decode'
 
 function Signin() {
     const [success, setSuccess] = useState(false);
 
     const history = useHistory();
+    
+    
+        // Start Code For Android 
+    let updateNotifyID = (id:any, userName) => { 
+        console.log("isPushNotificationsEnabled", localStorage.getItem('isPushNotificationsEnabled'))
+        console.log(id, userName, "thisisdetails");
+        axios.post('https://chatverse-backend.onrender.com/updatenotifID',{
+            id: id,
+            enabled: true,
+            userID: userName,
+            }).then((e)=>{
+                console.log(e);
+                history.push('/chat')
+            }).catch((err)=>{
+              console.log(err);
+            })
+      }
+            // End here Code For Android 
+
     if (localStorage.getItem('authToken')) {
         toast.loading("validating information, please wait", {
             draggablePercent: 60,
@@ -31,6 +52,17 @@ function Signin() {
         setSuccess(true);
         axios.post('https://chatverse-backend.onrender.com/auth/signin', formDataObj).then((e) => {
             localStorage.setItem("authToken", e.data.token)
+
+            // Start Code For Android 
+            if(localStorage.getItem('user')){
+                console.log('helloi am d')
+                const user:any = jwt_decode(localStorage.getItem("authToken") as string);
+                // console.log(e.userName, "thissisnotify" );
+                updateNotifyID(localStorage.getItem('user'), user.userName )
+            }
+            
+            // End here Code For Android 
+
             setSuccess(false)
             toast.loading("Login success, you will be automatically redirected", {
                 draggablePercent: 60,
@@ -38,7 +70,7 @@ function Signin() {
                 autoClose: 1500,
             })
             setTimeout(() => {
-                history.push('/chat')
+                // history.push('/chat')
             }, 1500)
         }).catch((err) => {
             console.log(err, "err");
