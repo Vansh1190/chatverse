@@ -46,36 +46,34 @@ function Chat(props: any) {
   if (isVerified) {
     // FOR ANDROID COMMENT THIS CODE AND FOR BUILDING WEB APP UNCOMMENT THIS 
     
-    // OneSignal.init({ appId: 'a7443046-e175-4adf-8de9-c2a296e35359' }).then(() => {
-    //   OneSignal.showSlidedownPrompt().then(() => {
-    //     OneSignal.getNotificationPermission(()=>{
+    OneSignal.init({ appId: 'a7443046-e175-4adf-8de9-c2a296e35359' }).then(() => {
+      OneSignal.showSlidedownPrompt().then(() => {
+        OneSignal.getNotificationPermission(()=>{
           
-    //     })
-    //   });
-    // })
-  //   OneSignal.on('subscriptionChange', function () {
-  //     OneSignal.isPushNotificationsEnabled((status)=>{
-  //       OneSignal.getUserId((id) => {
-  //         updateNotifyID(id, status, user);
-  //         if(!status){
-  //           localStorage.removeItem('os_pageViews')
-  //           localStorage.removeItem('isOptedOut')
-  //           localStorage.removeItem('onesignal-notification-prompt')
-  //           localStorage.removeItem('isPushNotificationsEnabled')
-  //         }
-  //       })
-  //   });
-  // })
-  // OneSignal.isPushNotificationsEnabled((status)=> {
-  //   console.log("Push notifications are enabled", status)
-  //   OneSignal.getUserId((id) => {
-  //     updateNotifyID(id, status, user);
-  //   });
-  // })
-  // }
-            // TILL HERE CODE FOR ANDROID
+        })
+      });
+    })
+    OneSignal.on('subscriptionChange', function () {
+      OneSignal.isPushNotificationsEnabled((status)=>{
+        OneSignal.getUserId((id) => {
+          updateNotifyID(id, status, user);
+          if(!status){
+            localStorage.removeItem('os_pageViews')
+            localStorage.removeItem('isOptedOut')
+            localStorage.removeItem('onesignal-notification-prompt')
+            localStorage.removeItem('isPushNotificationsEnabled')
+          }
+        })
+    });
+  })
+  OneSignal.isPushNotificationsEnabled((status)=> {
+    console.log("Push notifications are enabled", status)
+    OneSignal.getUserId((id) => {
+      updateNotifyID(id, status, user);
+    });
+  })
   }
-
+            // TILL HERE CODE FOR ANDROID
 },[OneSignalinitialized, isVerified])
 
 
