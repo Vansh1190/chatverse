@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../theme/pages/signup.css'
 import { UserIdContext } from '../components/UserIDContext';
 import jwt_decode from 'jwt-decode'
+import { Link } from 'react-router-dom';
 
 function Signin() {
     const [success, setSuccess] = useState(false);
@@ -119,7 +120,12 @@ function Signin() {
                         </IonList>
                         <IonLabel className='privacy-footer'>
           <p style={{ textAlign: 'end', opacity:"2", padding:'0 25px'}}>
-             <a href="/">Forgot password ?</a></p>
+            <Link to='/forget'>
+             <a href="#">
+                Forgot password ?
+                </a>
+            </Link>
+                </p>
             </IonLabel>
 
                         <IonButton id='submitBtn' className='submitBtn SigninBtn' type='submit' fill="outline">

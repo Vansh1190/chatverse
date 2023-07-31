@@ -64,25 +64,25 @@ function Tabs(props:any) {
             <IonLabel>Chats</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="status" href="/user/4/This is status page under development">
+          {/* <IonTabButton tab="status" href="/user/4/This is status page under development">
             <IonIcon icon={apertureOutline} />
             <IonLabel>Status</IonLabel>
-          </IonTabButton>
-
+          </IonTabButton> */}
+{/* 
           <IonTabButton tab="add" >
             <IonIcon size='large' icon={addCircleOutline} />
             <IonLabel></IonLabel>
-          </IonTabButton>
+          </IonTabButton> */}
 
           <IonTabButton tab="Connect" href='/connect'>
             <IonIcon icon={gitNetwork} />
             <IonLabel>Connect</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="search" >
+          {/* <IonTabButton tab="search" >
             <IonIcon icon={search} />
             <IonLabel>Search</IonLabel>
-          </IonTabButton>
+          </IonTabButton> */}
 
         </IonTabBar>
       </IonTabs>

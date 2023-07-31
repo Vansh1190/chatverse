@@ -3,6 +3,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { Route } from 'react-router-dom';
 import Page from './pages/Page';
 
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -26,6 +27,7 @@ import Tabs from './pages/Tabs';
 import Signin from './pages/Signin';
 // import Chat from './pages/Chat';
 import Verify from './pages/Verify';
+import ForgotPass from './pages/ForgotPass';
 // import UserChat from './pages/User';
 import OneSignal from 'onesignal-cordova-plugin';
 import { useEffect, useState } from 'react';
@@ -33,6 +35,7 @@ setupIonicReact();
 
 const App: React.FC = () => {
 
+  // FOR BUILDING WEB APP COMMENT THIS AND FOR ANDROID UNCOMMENT THIS CODE 
 
   // const [UserID, setUserID] = useState('');
 
@@ -51,7 +54,7 @@ const App: React.FC = () => {
   //     })
   //     OneSignal.addSubscriptionObserver(event => {
   //       console.log("OneSignal: subscription changed to userId:", event.to.userId);
-        
+
   //       OneSignal.getDeviceState((ds) => {
   //         console.log('Device State ' + ds.userId);
   //         setUserID(ds.userId);
@@ -67,28 +70,30 @@ const App: React.FC = () => {
   // // setTimeout(()=>{ 
   //   //   setUserID('0b79eedf-ac1e-474d-ad65-ae6662297e9d')
   //   // },2000)
-    
-  //   OneSignalInit();
-    
-    // OneSignalInit();
 
+  //   OneSignalInit();
+
+  // OneSignalInit();
+
+  // UNCOMMENT TILL THIS FOR ANDROID APK
 
   return (
     <IonApp>
-      
-        <IonReactRouter>
-          {/* <Menu /> */}
-          <IonRouterOutlet id="main">
-            <Route path="/" component={Page} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/verify" component={Verify} />
-            {/* <Route path="/tabs" component={Tabs} /> */}
-            <Route path="/signin" key={'15'} component={Signin} />
-            <Route path="/chat" key={'15'} component={Tabs} />
-            <Route path="/user" key={'16'} component={Tabs} />
-            <Route path="/connect" key={'17'} component={Tabs} />
-          </IonRouterOutlet>
-        </IonReactRouter>
+
+      <IonReactRouter>
+        {/* <Menu /> */}
+        <IonRouterOutlet id="main">
+          <Route path="/" component={Page} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/verify" component={Verify} />
+          {/* <Route path="/tabs" component={Tabs} /> */}
+          <Route path="/signin" key={'15'} component={Signin} />
+          <Route path="/chat" key={'15'} component={Tabs} />
+          <Route path="/user" key={'16'} component={Tabs} />
+          <Route path="/forget" key={'18'} component={ForgotPass} />
+          <Route path="/connect" key={'17'} component={Tabs} />
+        </IonRouterOutlet>
+      </IonReactRouter>
     </IonApp>
   );
 };

@@ -77,7 +77,6 @@ function User({ Socket, name, GetEmailFunc }) {
     // }
 
     const CheckUnReadMSG = (UserName, roomID, messageToSend, Sender) => {
-        console.log(UserName, roomID, messageToSend, Sender)
         // console.log(roomID, UserName);
         axios.post('https://chatverse-backend.onrender.com/checkunreadmsg',{
             roomID: roomID,
@@ -103,14 +102,13 @@ function User({ Socket, name, GetEmailFunc }) {
             }, 10);
         }
         if(e.keyCode == 13 && !e.altKey && !e.ctrlKey && e.shiftKey){
-            console.log('New line');
         }
 
     }
 
     const LeaveRoom = () => {
         Socket.emit('LeaveRoom',match.params.room)
-        console.log('leaved');
+    
     }
     
     const scrollToBottom = () => {
