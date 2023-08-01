@@ -37,36 +37,36 @@ const App: React.FC = () => {
 
   // FOR BUILDING WEB APP COMMENT THIS AND FOR ANDROID UNCOMMENT THIS CODE 
 
-  const [UserID, setUserID] = useState('');
+  // const [UserID, setUserID] = useState('');
 
-  function OneSignalInit(): void {
-    OneSignal.setAppId("a7443046-e175-4adf-8de9-c2a296e35359");
-    OneSignal.setNotificationOpenedHandler(function (jsonData) {
-      console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
-    });
+  // function OneSignalInit(): void {
+  //   OneSignal.setAppId("a7443046-e175-4adf-8de9-c2a296e35359");
+  //   OneSignal.setNotificationOpenedHandler(function (jsonData) {
+  //     console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+  //   });
 
-    // Prompts the user for notification permissions.
-    //    * Since this shows a generic native prompt, we recommend instead using an In-App Message to prompt for notification permission (See step 7) to better communicate to your users what notifications they will get.
-    OneSignal.promptForPushNotificationsWithUserResponse(function (accepted) {
-      console.log("User accepted notifications: " + accepted);
-      OneSignal.addSMSSubscriptionObserver((observer) => {
-        // OneSignal.
-      })
-      OneSignal.addSubscriptionObserver(event => {
-        console.log("OneSignal: subscription changed to userId:", event.to.userId);
+  //   // Prompts the user for notification permissions.
+  //   //    * Since this shows a generic native prompt, we recommend instead using an In-App Message to prompt for notification permission (See step 7) to better communicate to your users what notifications they will get.
+  //   OneSignal.promptForPushNotificationsWithUserResponse(function (accepted) {
+  //     console.log("User accepted notifications: " + accepted);
+  //     OneSignal.addSMSSubscriptionObserver((observer) => {
+  //       // OneSignal.
+  //     })
+  //     OneSignal.addSubscriptionObserver(event => {
+  //       console.log("OneSignal: subscription changed to userId:", event.to.userId);
 
-        OneSignal.getDeviceState((ds) => {
-          console.log('Device State ' + ds.userId);
-          setUserID(ds.userId);
-          localStorage.setItem("user", ds.userId);
-        });
-      });
-    });
-  }
-  useEffect(()=>{
-    console.log("OneSignal: subscription  userId:", UserID);
+  //       OneSignal.getDeviceState((ds) => {
+  //         console.log('Device State ' + ds.userId);
+  //         setUserID(ds.userId);
+  //         localStorage.setItem("user", ds.userId);
+  //       });
+  //     });
+  //   });
+  // }
+  // useEffect(()=>{
+  //   console.log("OneSignal: subscription  userId:", UserID);
 
-  },[UserID]);
+  // },[UserID]);
 
 
     // OneSignalInit();
