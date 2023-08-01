@@ -39,10 +39,23 @@ function Signin() {
             theme: "dark",
             autoClose: 9500,
         })
-        setTimeout(() => {
-            history.push('/chat')
-        }, 2500)
-    }
+
+            axios.post('https://chatverse-backend.onrender.com/VerifyAuth',{
+                token: localStorage.getItem('authToken')
+                }).then((e) => {
+                    if(e.data.UserFound){
+                        history.push('/chat')
+                    }
+                    else{
+                        localStorage.removeItem('authToken')
+                        toast.loading("Your ID was Banned", {
+                            draggablePercent: 60,
+                            theme: "dark",
+                            autoClose: 9500,
+                        })
+                    }
+                })
+}
 
     let signin = (event: any) => {
         document.getElementById('submitBtn')?.setAttribute('disabled', '');
@@ -121,9 +134,7 @@ function Signin() {
                         <IonLabel className='privacy-footer'>
           <p style={{ textAlign: 'end', opacity:"2", padding:'0 25px'}}>
             <Link to='/forget'>
-             <a href="#">
                 Forgot password ?
-                </a>
             </Link>
                 </p>
             </IonLabel>

@@ -141,6 +141,24 @@ function User({ Socket, name, GetEmailFunc }) {
         setTimeout(() => {
             document.getElementById('messageToSend').setFocus()
         }, 0);
+        axios.post('https://chatverse-backend.onrender.com/VerifyAuth',{
+                token: localStorage.getItem('authToken')
+                }).then((e) => {
+                    if(e.data.UserFound){
+                    }
+                    else{
+                        toast.error("Your ID was Banned", {
+                            draggablePercent: 60,
+                            theme: "dark",
+                            autoClose: 1500,
+                        })
+                        setTimeout(() => {
+                            window.location.href = 'https://chatuniverse.vercel.app'
+                        }, 1500);
+                    }
+        }).catch((err) => {
+            console.log(err)
+        })
     },[])
 
     useEffect(()=>{ 
